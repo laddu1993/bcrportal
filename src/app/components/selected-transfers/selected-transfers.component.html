@@ -1,0 +1,153 @@
+<div class="accordion-item active">
+  <div class="accordion-header transfer-mob-accordion">
+    <h1>Viewing {{ claim_reference }}</h1>
+    <div class="btn-panel btn-panel-wrp">
+      <div class="btn-panel print-buttons"> 
+        <button class="text-btn" [disabled]="selectedTransfers.length == 0" (click)="printTransfer()">
+          <i class="fas fa-print"></i>Print
+        </button>
+      </div>
+      <div class="btn-panel crud-buttons"> 
+          <button 
+            class="secondary_btn" 
+            data-bs-toggle="modal"
+            data-bs-target="#delete-popup"
+            (click)="deleteClaim()"
+            [disabled]="disableDelete"
+          >Delete</button>
+          
+      </div>
+      <div class="btn-panel">
+        <button class="primary_btn" (click)="editTransfer()" [disabled]="disableDelete">Edit</button>
+      </div>
+    </div>
+    <button
+        class="accordion-button"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseTwo"
+        aria-expanded="true"
+        aria-controls="collapseTwo"
+      >
+        <i class="fas fa-minus"></i>
+        <i class="fas fa-plus"></i>
+      </button>
+  </div>
+  <div
+      id="collapseTwo"
+      class="accordion-collapse collapse show"
+    >
+    <div class="accordion-body">
+      <app-skeleton-loader *ngIf="isSelectedTransferLoading"></app-skeleton-loader>
+          <p *ngIf="!isSelectedTransferLoading && emptyInvoiceTransfer">There are no records to show right now. Check back soon!</p>
+          <div [ngStyle]="{'display': isSelectedTransferLoading || emptyInvoiceTransfer? 'none': 'block'}">
+        <table id="selected-transfers" matSort mat-table [dataSource]="transferInvoiceDataSource" class="table-husqvarna invoice_table table selected_invoice_transfer_table">
+          <tbody>
+            <ng-container matColumnDef="sku">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> SKU </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">SKU </span> {{ element.sku }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="invoice">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Invoice # </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">Invoice # </span> {{ element.invoice }} </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Description </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">Description </span> {{ element.description }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="billed">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Billed </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">Billed </span> {{ (element.billed != null?element.billed:0) | currency: 'USD':'symbol':'1.2-2' }} </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="current">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Current </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">Current </span> {{ (element.current != null?element.current:0) | currency: 'USD':'symbol':'1.2-2' }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="credit">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Credit </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">Credit </span> {{ (element.credit != null?element.credit:0) | currency: 'USD':'symbol':'1.2-2' }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="sell">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Sell </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">Sell </span> {{ (element.sell_price != null?element.sell_price:0) | currency: 'USD':'symbol':'1.2-2' }} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedTransferInvoiceColumns"></tr>
+            <tr mat-row *matRowDef="let element; columns: displayedTransferInvoiceColumns;"></tr>
+          </tbody>
+        </table>
+        <mat-paginator 
+          [length]="selectedTransfers.length"
+          [pageSize]="5"
+          [pageSizeOptions]="[5, 10, 25, 100]"
+          aria-label="Select page"
+        ></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="pdfContent" class="pdfContent" style="display: none; margin-top: 40px;" #printTemplate>
+  <!-- Part 1: Transfer Details -->
+  <div class="pdf-header">
+      <div class="header-center">
+          <h2>Husqvarna Merchandise Transfer</h2>
+      </div>
+      <div class="header-right" style="text-align: right;">
+          <p style="margin-bottom: 3px; color: #273a60;"><strong>Transfer From:</strong> {{ fromDealer }}</p>
+          <p style="margin-bottom: 3px; color: #273a60;"><strong>Transfer To:</strong> {{ toDealer }}</p>
+      </div>
+  </div>
+
+  <!-- Part 2: Transfer Items Table -->
+  <div class="pdf-table">
+    <table class="table-husqvarna table invoice_table" style="border:1px solid #f4f4f3;">
+        <thead>
+            <tr>
+              <th>SKU</th>
+              <th>Invoice #</th>
+              <th>Description</th>
+              <th>Billed</th>
+              <th>Current</th>
+              <th>Credit</th>
+              <th>Sell</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let elementRow of selectedTransfers;">
+            <td>{{ elementRow.sku }}</td>
+            <td>{{ elementRow.invoice }}</td>
+            <td>{{ elementRow.description }}</td>
+            <td>{{ elementRow.billed | currency: 'USD':'symbol':'1.2-2' }}</td>
+            <td>{{ elementRow.current | currency: 'USD':'symbol':'1.2-2' }}</td>
+            <td>{{ elementRow.credit | currency: 'USD':'symbol':'1.2-2' }}</td>
+            <td>{{ elementRow.sell_price | currency: 'USD':'symbol':'1.2-2' }}</td>
+          </tr>
+          <tr class="selected-row">
+            <td><b>Total</b></td>
+            <td></td>
+            <td></td>
+            <td><b>{{ total_billed | currency: 'USD':'symbol':'1.2-2' }}</b></td>
+            <td><b>{{ total_current | currency: 'USD':'symbol':'1.2-2' }}</b></td>
+            <td><b>{{ total_credit | currency: 'USD':'symbol':'1.2-2' }}</b></td>
+            <td><b>{{ total_sell_price | currency: 'USD':'symbol':'1.2-2' }}</b></td>
+          </tr>
+        </tbody>
+    </table>
+  </div>
+
+  <!-- Part 3: Signature Section -->
+  <div class="signature-section" style="text-align: right; display: flex; justify-content: flex-end;">
+    <div class="signature">
+        <label for="signature" style="text-align: left;">Signed:</label>
+        <textarea id="signature" rows="4" cols="40"></textarea>
+    </div>
+  </div>
+</div>

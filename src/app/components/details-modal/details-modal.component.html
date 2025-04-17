@@ -1,0 +1,85 @@
+<!-- Detials modal -->
+<div
+  class="modal fade"
+  id="detailsmodal"
+  tabindex="-1"
+  data-bs-backdrop="static"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 id="exampleModalLabel">Transfer Details</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="detailsForm">
+          <div class="row">
+            <div class="col-sm-6 col-12 mb-2">
+              <label for="exampleInputEmail1">Term Code <span class="color-red">*</span></label>
+              <div class="input-group">
+                <input
+                  id="tc"
+                  formControlName="tc"
+                  type="text"
+                  class="form-control"
+                  maxlength="15"
+                  placeholder=""
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                />
+              </div>
+              <div *ngIf="detailsForm.get('tc')?.touched && detailsForm.get('tc')?.invalid" class="text-danger">
+                <small *ngIf="detailsForm.get('tc')?.errors?.['required']">Term code is required.</small>
+                <small *ngIf="detailsForm.get('tc')?.errors?.['maxlength']">Term code must not exceed 15 characters.</small>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-12 mb-2">
+              <label for="exampleInputEmail1">GE Approval <span class="color-red">*</span></label>
+              <div class="input-group">
+                <input
+                  id="gc"
+                  formControlName="gc"
+                  type="text"
+                  class="form-control"
+                  placeholder=""
+                  maxlength="15"
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                />
+              </div>
+              <div *ngIf="detailsForm.get('gc')?.touched && detailsForm.get('gc')?.invalid" class="text-danger">
+                <small *ngIf="detailsForm.get('gc')?.errors?.['required']">GE Approval is required.</small>
+                <small *ngIf="detailsForm.get('gc')?.errors?.['maxlength']">GE Approval must not exceed 15 characters.</small>
+              </div>
+            </div>
+
+            <div class=" col-12 mb-2">
+              <label for="exampleInputEmail1">Add Note <span class="color-red">*</span></label>
+              <div class="input-group">
+                <textarea id="notes" formControlName="notes"></textarea>
+              </div>
+            </div>
+            <div *ngIf="detailsForm.get('notes')?.touched && detailsForm.get('notes')?.invalid" class="text-danger">
+              <small *ngIf="detailsForm.get('notes')?.errors?.['required']">Notes is required.</small>
+              <small *ngIf="detailsForm.get('notes')?.errors?.['maxlength']">Notes must not exceed 100 characters.</small>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="secondary_btn" (click)="clearData()">
+          Clear
+        </button>
+        <button type="button" class="primary_btn" (click)="addTransferDetails()">{{ submit_bcr?'Submit':'Save' }}</button>
+      </div>
+    </div>
+  </div>
+</div>

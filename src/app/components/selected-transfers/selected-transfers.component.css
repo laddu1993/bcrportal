@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+.transfer-mob-accordion  .btn-panel {
+    margin-bottom: 0;
+}
+.primary_btn:disabled, .secondary_btn:disabled, .text-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .secondary_btn:disabled{
+    background-color: #f4f4f3;
+    color: #273a60;
+  }
+  
+@media (max-width:767px) {
+    .transfer-mob-accordion {
+        flex-direction: column;
+        padding-right: 0;
+    } 
+    .transfer-mob-accordion h1 {
+        width: 100%;
+    }
+    .transfer-mob-accordion .btn-panel-wrp{
+        flex-direction: row;
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: 25px;
+        align-items: center;
+    }
+    /* .transfer-mob-accordion .btn-panel-wrp .btn-panel {
+        width: 50%;
+    } */
+}
+/* @media (max-width:480px) {
+    .transfer-mob-accordion .btn-panel-wrp{
+        flex-direction: column;
+    }
+    .transfer-mob-accordion .btn-panel-wrp .btn-panel {
+        width: 100%;
+    }
+} */
+
+/* PDF Header - Move transfer info to right of the header */
+.pdf-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-family: "Roboto", sans-serif;;
+    color: #273a60;
+    top: 0;
+}
+
+.pdf-header .header-center {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.pdf-header .header-right {
+    /* text-align: right; */
+    color: black;
+}
+.pdf-table .invoice_table th {
+    background-color: #273a60;
+    color: #fff;
+}
+
+.pdf-table .invoice_table td {
+    font-size: 12px;
+}
+
+/* Signature Section Styling */
+.signature-section {
+    margin-top: 30px;
+    /* text-align: right; */
+}
+
+.signature input {
+    padding: 6px;
+    margin-left: 10px;
+    font-size: 12px;
+    width: 200px;
+}
+
+.transfer-header .header-info {
+    font-size: 12px; /* Reduced font size */
+    color: #333;
+}
+
+.transfer-header .from-to {
+    margin-bottom: 8px; /* Reduced margin */
+}
+
+.transfer-header .from-to p {
+    margin: 0;
+}
+
+.invoice_table .serial-col {
+    width: 20%;
+}
+.invoice_table {
+    table-layout: fixed;
+}
+.invoice_table .col1 {
+    width: 10%;
+}
+.invoice_table .col3 {
+    width: 13%;
+}
+.invoice_table .col4 {
+    width: 20%;
+}
+.invoice_table .col5 {
+    width: 10%;
+}
+
+

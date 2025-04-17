@@ -1,0 +1,102 @@
+/*--New--*/
+.invoice_table .serial-col {
+    width: 20%;
+}
+.invoice_table {
+    table-layout: fixed;
+}
+.invoice_table .col1 {
+    width: 10%;
+}
+.invoice_table .col3 {
+    width: 13%;
+}
+.invoice_table .col4 {
+    width: 20%;
+}
+.invoice_table .col5 {
+    width: 10%;
+}
+.accordion-header.invoice-mob-accordion .btn-panel {
+    margin-bottom: 0;
+}
+.accordion-header.invoice-mob-accordion .search-box {
+    width: 15%;
+    flex-grow: 1;
+}
+.accordion-header.invoice-mob-accordion .search-box:first-child{
+    margin-left: 8px;
+}
+.btn-search {
+    background: transparent;
+    border-radius: 6px;
+    border: 1px solid #90908f;
+    padding: 0 10px;
+}
+.btn-search i {
+    color: #4a4a4a;
+}
+.table.invoice_table tr td{
+    vertical-align: middle;
+  }
+.btn-panel .search-box input{
+    line-height: 22.75px;
+}
+.table.invoice_table tr td:first-child,.table.invoice_table tr th:first-child{
+    padding-left: 8px;
+  }
+@media (max-width:768px) {
+    .accordion-header.invoice-mob-accordion {
+        flex-direction: column;
+        padding-right: 0;
+    }
+    .accordion-header.invoice-mob-accordion h1 {
+        width: 100%;
+    }
+    .accordion-header.invoice-mob-accordion .btn-panel {
+        flex-direction: row;
+        margin-bottom: 0;
+        justify-content: flex-start;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+    .accordion-header.invoice-mob-accordion .search-box {
+        width: 31.5%;
+    }
+    .accordion-header.invoice-mob-accordion .search-box:first-child{
+        margin-left: 0;
+    }
+}
+@media (max-width:480px) {
+    .accordion-header.invoice-mob-accordion .search-box {
+        width: 48%;
+    }
+}
+
+select:disabled {
+    background-color: #dfdfdf;
+    cursor: not-allowed;
+    color: #777777;
+}
+
+.btn-search:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* input[type=checkbox]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+ } */
+
+.add-checkbox:checked:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events:visible
+}
+
+.add-checkbox:not(:checked):disabled {
+    background-color: #dfdfdf;
+    cursor: not-allowed;
+    pointer-events: visible;
+}

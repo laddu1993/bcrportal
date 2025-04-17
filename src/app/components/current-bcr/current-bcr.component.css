@@ -1,0 +1,77 @@
+/* PDF Header - Move transfer info to right of the header */
+.pdf-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-family: "Roboto", sans-serif;;
+    color: #273a60;
+    top: 0;
+}
+
+.pdf-header .header-center {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.pdf-header .header-right {
+    /* text-align: right; */
+    color: black;
+}
+.pdf-table .invoice_table th {
+    background-color: #273a60;
+    color: #fff;
+}
+
+.pdf-table .invoice_table td {
+    font-size: 12px;
+}
+
+/* Signature Section Styling */
+.signature-section {
+    margin-top: 30px;
+    /* text-align: right; */
+}
+
+.signature input {
+    padding: 6px;
+    margin-left: 10px;
+    font-size: 12px;
+    width: 200px;
+}
+
+.transfer-header .header-info {
+    font-size: 12px; /* Reduced font size */
+    color: #333;
+}
+
+.transfer-header .from-to {
+    margin-bottom: 8px; /* Reduced margin */
+}
+
+.transfer-header .from-to p {
+    margin: 
+    0;
+}
+
+.text-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+.remove_btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+a.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.primary_btn:disabled
+{
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
