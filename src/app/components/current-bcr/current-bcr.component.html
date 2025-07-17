@@ -8,8 +8,7 @@
         data-bs-toggle="collapse"
         data-bs-target="#collapseTwo"
         aria-expanded="false"
-        aria-controls="collapseTwo"
-      >
+        aria-controls="collapseTwo" >
         <i class="fas fa-minus toggle-icon"></i>
         <i class="fas fa-plus toggle-icon"></i>
       </button>
@@ -21,13 +20,10 @@
       <div class="accordion-body">
         <div class="btn-panel">
           <div class="txt_btns">
-            <button
-              class="text-btn"
-              (click)="addManualEntry()"
-              [disabled]="bcr_submitted_status"
-              data-bs-toggle="modal"
-              data-bs-target="#editmanualentymodal"
-            >
+            <button class="text-btn" data-bs-toggle="modal" [disabled]="bcr_submitted_status" data-bs-target="#importBulkModal">
+              <i class="fas fa-file-import"></i>Import Bulk
+            </button>
+            <button class="text-btn" (click)="addManualEntry()" [disabled]="bcr_submitted_status" data-bs-toggle="modal" data-bs-target="#editmanualentymodal" >
               <i class="fas fa-user-edit"></i>Manual Entry
             </button>
             <button class="text-btn"  data-bs-toggle="modal"
@@ -200,6 +196,75 @@
     <div class="signature">
         <label for="signature" style="text-align: left;">Signed:</label>
         <textarea id="signature" rows="4" cols="40"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- Import Bulk Dialog -->
+<div
+  class="modal fade"
+  id="importBulkModal"
+  data-bs-backdrop="static"
+  tabindex="-1"
+  aria-labelledby="importBulkModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content" *ngIf="bulkImportEnabled">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="importBulkModalLabel">Import Bulk</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="">
+          <div class="mb-3">
+            <label for="bulkFile" class="form-label">Select File <span class="color-red">*</span></label>
+            <input
+              type="file"
+              id="bulkFile"
+              class="form-control"
+              (change)="onBulkFileChange($event)"
+              accept=".xlsx, .xls, .csv"
+            />
+            <div *ngIf="bulkFileError" class="text-danger mt-1">
+              <small>{{ bulkFileError }}</small>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <a [href]="baseUrl + 'assets/sample-template.csv'" download>
+              <i class="fas fa-download me-1"></i> Download Sample CSV
+            </a>
+          </div>
+        </form>
+      </div>
+      <div *ngIf="importErrors?.length" class="mt-2" style="border: 1px solid #dc3545; background-color: #f8d7da; padding: 0.75rem; border-radius: 0.25rem; color: #842029;">
+        <ul class="mb-0 ps-3" style="font-size: 0.875rem;">
+          <li *ngFor="let err of importErrors">{{ err }}</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="secondary_btn"
+          data-bs-dismiss="modal"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="primary_btn"
+          (click)="importBulk()"
+          [disabled]="!selectedBulkFile"
+        >
+          Import
+        </button>
+      </div>
     </div>
   </div>
 </div>

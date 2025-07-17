@@ -39,8 +39,8 @@ export class AccountService {
         this.router.navigate(['unauthorized'], { replaceUrl: true });
       }
     } else {
-      // console.log('Original AID Value: ', this.encryptedAidParam);
-      // console.log('Encrypted AID Value: ', this.encryptionService.encrypt(this.encryptedAidParam || ''));
+      console.log('Original AID Value: ', this.encryptedAidParam);
+      console.log('Encrypted AID Value: ', this.encryptionService.encrypt(this.encryptedAidParam || ''));
       this.aid = this.oauth === 'isDev' && this.enableUrlEncryption
         ? this.encryptedAidParam
         : this.encryptedAidParam;

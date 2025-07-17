@@ -52,6 +52,9 @@
               </div>
               <div *ngIf="addForm.get('invoice')?.touched && addForm.get('invoice')?.invalid" class="text-danger">
                 <small *ngIf="addForm.get('invoice')?.errors?.['required']">Invoice # is required.</small>
+                <small *ngIf="addForm.get('invoice')?.errors?.['nonZero']">Invalid input: must be greater than 0</small>
+                <small *ngIf="addForm.get('invoice')?.errors?.['pattern']">Spaces are not allowed in Invoice #.</small>
+                <small *ngIf="addForm.get('invoice')?.errors?.['specialCharacters']">Special characters are not allowed in Invoice #.</small>
               </div>
             </div>
 
@@ -156,6 +159,12 @@
               </div>
               <div *ngIf="addForm.get('serial')?.touched && addForm.get('serial')?.invalid" class="text-danger">
                 <small *ngIf="addForm.get('serial')?.errors?.['required']">Serial # is required.</small>
+                <small *ngIf="addForm.get('serial')?.errors?.['minlength']">The serial field must be at least 4 characters in length.</small>
+                <small *ngIf="addForm.get('serial')?.errors?.['nonZero']">Invalid input: must be greater than 0</small>
+                <small *ngIf="addForm.get('serial')?.errors?.['leadingSpace']">Leading spaces are not allowed in Serial #.</small>
+                <small *ngIf="addForm.get('serial')?.errors?.['trailingSpace']">Trailing spaces are not allowed in Serial #.</small>
+                <small *ngIf="addForm.get('serial')?.errors?.['specialCharacters']">Special characters are not allowed in Serial #.</small>
+                <!-- <small *ngIf="addForm.get('serial')?.errors?.['pattern']">Spaces are not allowed in Serial #.</small> -->
               </div>
             </div>
 
@@ -184,6 +193,7 @@
           class="btn-close"
           data-bs-dismiss="modal"
           aria-label="Close"
+          (click)="closePopup()"
         ></button>
       </div>
       <div class="modal-body" *ngIf="currentElementEdited != null">
@@ -221,6 +231,9 @@
               </div>
               <div *ngIf="editForm.get('invoice')?.touched && editForm.get('invoice')?.invalid" class="text-danger">
                 <small *ngIf="editForm.get('invoice')?.errors?.['required']">Invoice # is required.</small>
+                <small *ngIf="editForm.get('invoice')?.errors?.['nonZero']">Invalid input: must be greater than 0</small>
+                <small *ngIf="editForm.get('invoice')?.errors?.['pattern']">Spaces are not allowed in Invoice #.</small>
+                <small *ngIf="editForm.get('invoice')?.errors?.['specialCharacters']">Special characters are not allowed in Invoice #.</small>
               </div>
             </div>
 
@@ -277,14 +290,14 @@
               <label for="exampleInputEmail1">Credit Amount <span class="color-red">*</span></label>
               <div class="input-group">
                 <input
-                  type="text"
                   formControlName="credit"
+                  type="text"
                   class="form-control"
                   placeholder=""
                   aria-label="Username"
                   aria-describedby="basic-addon1"
-                  [readonly]="!currentElementEdited.isInventory"
-                  [value]="currentElementEdited.credit"
+                  [readonly]="!currentElementEdited.isInventory && !canEditCredit"
+                  value="{{ currentElementEdited.credit }}"
                 />
               </div>
               <div *ngIf="editForm.get('credit')?.touched && editForm.get('credit')?.invalid" class="text-danger">
@@ -319,7 +332,7 @@
 
             <div class="col-12 mb-2">
               <!-- [readOnly]="!currentElementEdited.isManualEntry && !currentElementEdited.isInventory && currentElementEdited.serial != ''" -->
-              <label for="exampleInputEmail1">Serial <span class="color-red">*</span></label>
+              <label for="exampleInputEmail1">Serial # <span class="color-red">*</span></label>
               <div class="input-group">
                 <input
                   name="invoice_serial"
@@ -334,6 +347,12 @@
               </div>
               <div *ngIf="editForm.get('serial')?.touched && editForm.get('serial')?.invalid" class="text-danger">
                 <small *ngIf="editForm.get('serial')?.errors?.['required']">Serial # is required.</small>
+                <small *ngIf="editForm.get('serial')?.errors?.['minlength']">The serial field must be at least 4 characters in length.</small>
+                <small *ngIf="editForm.get('serial')?.errors?.['nonZero']">Invalid input: must be greater than 0</small>
+                <small *ngIf="editForm.get('serial')?.errors?.['leadingSpace']">Leading spaces are not allowed in Serial #.</small>
+                <small *ngIf="editForm.get('serial')?.errors?.['trailingSpace']">Trailing spaces are not allowed in Serial #.</small>
+                <small *ngIf="editForm.get('serial')?.errors?.['specialCharacters']">Special characters are not allowed in Serial #.</small>
+                <!-- <small *ngIf="editForm.get('serial')?.errors?.['pattern']">Spaces are not allowed in Serial #.</small> -->
               </div>
             </div>
 

@@ -234,8 +234,8 @@ export class InvoiceComponent implements OnInit, AfterViewInit{
             this.emptyMessage = 'Please search for an invoice to continue';
           }
 
-          if(editedTransfer['claim_status'] != 'Draft')
-          {
+          this.bcr_submitted_status = false;
+          if(editedTransfer['claim_status'] != 'Draft'){
             this.bcr_submitted_status = true;
           }
 

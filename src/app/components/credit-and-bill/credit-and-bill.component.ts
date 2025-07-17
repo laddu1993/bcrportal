@@ -3,13 +3,13 @@ import { ApiCallsService } from '../../services/api-calls.service';
 import { TableRowModel,dealerTableModal } from '../../models/table-row-model.model';
 import { SharedServicesService } from '../../services/shared-services.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { subscribe } from 'diagnostics_channel';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AccountService } from '../../services/account.service';
 import { LoaderService } from '../../services/loader.service';
 import { retry } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 declare var bootstrap: any;
 
@@ -23,7 +23,8 @@ export class CreditAndBillComponent implements OnInit, AfterViewInit{
   private destroy$ = new Subject<void>();
   acct_id: number | null = null; // Store aid from URL
   isDevMode: boolean = false;
-  bcr_status_url: string = 'create_bcr'; // Change this based on your logic  
+  bcr_status_url: string = ''; // Change this based on your logic  
+  isLocal = environment.local;
 
   constructor(
     private apiservices: ApiCallsService,
@@ -172,8 +173,21 @@ export class CreditAndBillComponent implements OnInit, AfterViewInit{
   
 
   ngOnInit() {
+    const currentUrl = this.router.url;
+    if (currentUrl.startsWith('/current_bcr')) {
+      this.bcr_status_url = 'current_bcr';
+    } else if (currentUrl.startsWith('/create_bcr')) {
+      this.bcr_status_url = 'create_bcr';
+    }
     this.initializeAccountData();
-    this.loadTransferDetails();
+    this.sharedService.transferDetailsTriggerObservable$
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(() => {
+      this.loadTransferDetails();
+    });
+    if(this.isLocal){
+      this.loadTransferDetails();
+    }
     this.retrieveSharedServiceData();
     this.subscribeToSharedServiceUpdates();
   }
@@ -198,7 +212,7 @@ export class CreditAndBillComponent implements OnInit, AfterViewInit{
       takeUntil(this.destroy$)
     ).subscribe({
       next: (transferDetails) => {
-        console.log('Response Data:', transferDetails.results);
+        // console.log('Response Data:', transferDetails.results);
         this.loaderService.hide();
         if (transferDetails?.status === 200 && transferDetails.results) {
           this.accountType = transferDetails.results?.AgentRole;
@@ -281,17 +295,23 @@ export class CreditAndBillComponent implements OnInit, AfterViewInit{
   
   private updateCosts(costs: any): void {
     if (!costs || costs.length === 0) return;
-  
-    const adjustment = costs.type === "add" ? 1 : -1;
-    this.total_billed = Number((this.total_billed + adjustment * costs.billed).toFixed(2));
-    this.total_cost = Number((this.total_cost + adjustment * costs.cost).toFixed(2));
-    this.total_credit = Number((this.total_credit + adjustment * costs.credit).toFixed(2));
-  }
+    if (costs.type === "multiply") {
+      this.total_billed = Number((this.total_billed * costs.billed).toFixed(2));
+      this.total_cost = Number((this.total_cost * costs.cost).toFixed(2));
+      this.total_credit = Number((this.total_credit * costs.credit).toFixed(2));
+    } else {
+      const adjustment = costs.type === "add" ? 1 : -1;
+      this.total_billed = Number((this.total_billed + adjustment * costs.billed).toFixed(2));
+      this.total_cost = Number((this.total_cost + adjustment * costs.cost).toFixed(2));
+      this.total_credit = Number((this.total_credit + adjustment * costs.credit).toFixed(2));
+    }
+  }  
   
   private processEditedTransfer(editedTransfer: any): void {
     if (!editedTransfer || editedTransfer.length === 0) return;
   
     this.accountType = editedTransfer.account_type;
+    this.bcr_submitted_status = false;
     if (editedTransfer.claim_status !== 'Draft') this.bcr_submitted_status = true;
   
     if (editedTransfer.organization?.from_id === null) {

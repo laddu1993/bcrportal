@@ -21,6 +21,7 @@ declare var bootstrap:any;
 export class SelectedTransfersComponent {
   
   selectedTransfers:any = [];
+  transferHeaderDetails: any;
   transferDetails = [];
   transferToBeEdited:any = [] ;
   claim_id:string = '';
@@ -29,6 +30,7 @@ export class SelectedTransfersComponent {
   disableDelete:boolean = true;
   account_type:string = '';
   territory:string = '';
+  isDevMode: boolean = false;
 
   fromDealer:string = '';
   toDealer:string = '';
@@ -38,11 +40,18 @@ export class SelectedTransfersComponent {
   total_billed:number = 0;
   total_current:number = 0;
   total_credit:number = 0;
+  managerApproved: string = '';
+  fromApproved: string = '';
+  toApproved: string = '';
 
   private destroy$ = new Subject<void>();
 
   isSelectedTransferLoading = false;
   emptyInvoiceTransfer = true;
+  selectedRole: string = '';
+  selectedFields: string[] = [];
+  disableExport: boolean = true;
+  isDownloading = false;
 
   displayedTransferInvoiceColumns: string[] = ['sku','invoice', 'description', 'billed', 'current', 'credit', 'sell'];
 
@@ -66,11 +75,42 @@ export class SelectedTransfersComponent {
 
     this.route.queryParams.subscribe(params => {
       this.account_id = params['aid'];
+      this.isDevMode = params['oauth'] === 'isDev';
     })
+
+    this.sharedServices.filter$.subscribe((filterValue) => {
+      if (filterValue !== null) {
+        // console.log('Filter received in selected-transfers:', filterValue);
+        // Reset transfer data
+        this.transferInvoiceDataSource.data = null;
+        this.emptyInvoiceTransfer = true;
+        this.disableDelete = true;
+    
+        // Clear selected transfers array
+        this.selectedTransfers = [];
+    
+        // Clear reference number if element exists
+        const refNumberElement = document.getElementById('ref_number') as HTMLSpanElement | null;
+        if (refNumberElement) {
+          refNumberElement.textContent = '';
+        }
+      }
+    });    
 
     this.sharedServices.selectedTransfers$.pipe(takeUntil(this.destroy$)).subscribe((transferElement) =>{
       if(transferElement.length != 0)
       {
+        //console.log('VL Response Side Transfer' , transferElement);
+        // ✅ Store approval flags
+        this.disableExport = this.selectedTransfers.length === 0 || this.claim_reference.includes('Draft');
+        this.managerApproved = transferElement['manager_approved'];
+        this.fromApproved = transferElement['from_approved'];
+        this.toApproved = transferElement['to_approved'];
+        this.sharedServices.setValues({
+          managerApproved: transferElement['manager_approved'],
+          fromApproved: transferElement['from_approved'],
+          toApproved: transferElement['to_approved'],
+        });
 
         this.sharedServices.accountType$.pipe(takeUntil(this.destroy$)).subscribe((accountType) => {
           this.account_type = accountType;
@@ -140,6 +180,8 @@ export class SelectedTransfersComponent {
                     this.transferInvoiceDataSource.sort = this.sort;
                     this.transferInvoiceDataSource.paginator = this.paginator;
                     this.emptyInvoiceTransfer = false;
+                    this.disableExport = this.selectedTransfers.length === 0 || this.claim_reference.includes('Draft');
+
                     this.snackBar.open('Invoices loaded!', 'Close', {
                       duration: 3000,
                       horizontalPosition: 'right',
@@ -306,7 +348,14 @@ export class SelectedTransfersComponent {
     {
       this.sharedServices.editTransferDetails(this.transferToBeEdited);
       this.sharedServices.storeData(this.transferType,'transferType');
-      this.router.navigate(['/create_bcr'], { queryParams: { aid: this.account_id} });
+      // ** Add redirect logic without affecting existing functionality **
+      if (this.isDevMode && this.account_id) {
+        this.router.navigate(['/create_bcr'], {
+          queryParams: { aid: this.account_id, oauth: 'isDev' }
+        });
+      }else{
+        this.router.navigate(['/create_bcr'], { queryParams: { aid: this.account_id} });
+      }
     }
     else
     {
@@ -344,4 +393,75 @@ export class SelectedTransfersComponent {
       this.sharedServices.deleteClaim(this.claim_id);
     }
   }
+
+  private roleFieldMap: { [key: string]: string[] } = {
+    buyer: ['SKU', 'Invoice', 'Serial', 'Description', 'Sell'],
+    seller: ['SKU', 'Invoice', 'Serial', 'Description', 'Credit'],
+    husqvarna: ['SKU', 'Invoice', 'Serial', 'Description', 'Billed', 'Current', 'Credit', 'Sell']
+  };
+
+  getprintTransfer(): void {
+    this.isDownloading = true; // Disable button immediately
+    this.selectedFields = this.roleFieldMap[this.selectedRole] || [];
+    const printElement = this.printTemplate.nativeElement as HTMLElement;
+
+    //this.loaderService.show();
+    document.body.style.overflow = 'hidden';
+    printElement.style.display = 'block';
+
+    // 👇 Generate timestamp + role-based filename
+    const roleLabel = this.selectedRole || 'All';
+    const now = new Date();
+    const formattedTimestamp = now.getFullYear().toString() +
+      ('0' + (now.getMonth() + 1)).slice(-2) +
+      ('0' + now.getDate()).slice(-2) + '_' +
+      ('0' + now.getHours()).slice(-2) +
+      ('0' + now.getMinutes()).slice(-2) +
+      ('0' + now.getSeconds()).slice(-2);
+    const fileName = `Transfers_${roleLabel}_Export_${formattedTimestamp}.pdf`;
+
+    setTimeout(() => {
+      this.pdfService.generatePDF(printElement, fileName)
+        .finally(() => {
+          printElement.style.display = 'none';
+          //this.loaderService.hide();
+          document.body.style.overflow = 'auto';
+          this.isDownloading = false; // Enable button after download
+        });
+    }, 50);
+  }
+
+  onRoleChange(event: any): void {
+    this.selectedRole = event.target.value;
+  }
+
+  exportToCSV(): void {
+    const headers = ['SKU', 'Invoice #', 'Serial #', 'Description', 'Billed', 'Current', 'Credit', 'Sell'];
+    const csvRows = [headers.join(',')];
+
+    this.selectedTransfers.forEach((item: any) => {
+      const row = [
+        item.sku,
+        item.invoice,
+        `"${item.description}"`, // quoted to prevent comma issues
+        item.billed ?? 0,
+        item.current ?? 0,
+        item.credit ?? 0,
+        item.sell_price ?? 0
+      ];
+      csvRows.push(row.join(','));
+    });
+
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.setAttribute('href', url);
+    a.setAttribute('download', `TransferData_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
 }

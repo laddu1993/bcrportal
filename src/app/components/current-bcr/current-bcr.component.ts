@@ -4,7 +4,7 @@ import { TableRowModel, selectedInvoices } from '../../models/table-row-model.mo
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
-import { from } from 'rxjs';
+import { concat, from } from 'rxjs';
 import { ApiCallsService } from '../../services/api-calls.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
@@ -13,6 +13,7 @@ import { LoaderService } from '../../services/loader.service';
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 import { AccountService } from '../../services/account.service';
+import { environment } from '../../../environments/environment';
 
 declare var bootstrap: any;
 
@@ -46,6 +47,7 @@ export class CurrentBcrComponent implements OnInit, AfterViewInit{
   aid:string = '';
   fromTerritory = '';
   toTerritory = '';
+  baseUrl = environment.baseUrl;
 
   submit_bcr:boolean = false;
   bcr_submitted_status:boolean = false;
@@ -55,6 +57,10 @@ export class CurrentBcrComponent implements OnInit, AfterViewInit{
   total_credit:number = 0;
   total_sell_amount:number = 0;
   editedIndex:number = null;
+  bulkImportEnabled = true;
+  bulkFileError: string = '';
+  selectedBulkFile: File | null = null;
+  importErrors: string[] = [];
 
   selectedInvoices:selectedInvoices[] = [];
   savedInvoices = [];
@@ -86,37 +92,30 @@ export class CurrentBcrComponent implements OnInit, AfterViewInit{
       this.bcr_submitted_status = this.sharedServices.retrieveBCRStatus();
     }
 
-    if(this.sharedServices.retrieveSelectedInvoiceData())
-    {
+    if(this.sharedServices.retrieveSelectedInvoiceData()){
 
-      if(this.sharedServices.retrieveTransferType())
-      {
-        
+      if(this.sharedServices.retrieveTransferType()){
         this.transferType = this.sharedServices.retrieveTransferType();
       }
 
-      if(this.sharedServices.retrieveDealerSearch())
-      {
+      if(this.sharedServices.retrieveDealerSearch()){
         const search_dealers = this.sharedServices.retrieveDealerSearch();
         this.fromTerritory = search_dealers['territory_from'];
         this.toTerritory = search_dealers['territory_to'];
       }
-
+      
       this.selectedInvoices = this.sharedServices.retrieveSelectedInvoiceData();
       this.defineTableDataSource(this.selectedInvoices);
 
       const accordion = document.getElementById('accordionItem');
 
-      if(accordion)
-      {
+      if(accordion){
         this.renderer.addClass(accordion, 'active');
-
         // Find the collapse element and add the 'show' class
         const collapseElement = accordion.querySelector(
           '.accordion-collapse'
         );
         this.renderer.addClass(collapseElement, 'show');
-
         // Set aria-expanded to true
         const buttonElement = accordion.querySelector(
           '.accordion-button'
@@ -128,19 +127,16 @@ export class CurrentBcrComponent implements OnInit, AfterViewInit{
       }
     }
 
-    if(this.sharedServices.retrieveSavedInvoices())
-    {
+    if(this.sharedServices.retrieveSavedInvoices()){
       this.savedInvoices = this.sharedServices.retrieveSavedInvoices();
       this.calculateCosts(this.savedInvoices);
     }
 
-    if(this.sharedServices.retrieveClaimID())
-    {
+    if(this.sharedServices.retrieveClaimID()){
       this.claimID = this.sharedServices.retrieveClaimID();
     }
 
-    if(this.sharedServices.retrieveTransferDetails())
-    {
+    if(this.sharedServices.retrieveTransferDetails()){
       this.transferDetails = this.sharedServices.retrieveTransferDetails();
     }
 
@@ -197,6 +193,7 @@ export class CurrentBcrComponent implements OnInit, AfterViewInit{
     this.sharedServices.updatedBCR$.pipe(takeUntil(this.destroy$)).subscribe((updatedInvoice) => {
       if(updatedInvoice != null )
       {
+        //console.log('updatedInvoice:', updatedInvoice);
         // const index = this.selectedInvoices.findIndex(item => item.invoice == updatedInvoice.invoice &&  item.sku == updatedInvoice.sku);
         if(this.editedIndex != -1 && this.editedIndex != null)
         {
@@ -286,29 +283,25 @@ export class CurrentBcrComponent implements OnInit, AfterViewInit{
     });
 
     this.sharedServices.transferType$.pipe(takeUntil(this.destroy$)).subscribe((transferType) => {
-      if(transferType != '')
-      {
+      if(transferType != ''){
         this.transferType = transferType;
       }
     });
 
     this.sharedServices.territoryFrom$.pipe(takeUntil(this.destroy$)).subscribe((territoryFrom) => {
-      if(territoryFrom != '')
-      {
+      if(territoryFrom != ''){
         this.fromTerritory = territoryFrom;
       }
     });
 
     this.sharedServices.territoryTo$.pipe(takeUntil(this.destroy$)).subscribe((territoryTo) => {
-      if(territoryTo != '')
-      {
+      if(territoryTo != ''){
         this.toTerritory = territoryTo;
       }
     });
 
     this.sharedServices.clearComponents$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if(value != null && value == true)
-      {
+      if(value != null && value == true){
         this.selectedInvoices = [];
         this.selectedInvoiceSource.data = [];
         this.selectedInvoiceSource.paginator = null;
@@ -399,17 +392,15 @@ export class CurrentBcrComponent implements OnInit, AfterViewInit{
     });
 
     this.sharedServices.selectedFromDealer$.pipe(takeUntil(this.destroy$)).subscribe((dealerFrom) => {  
-      if(dealerFrom != null)
-      {
+      if(dealerFrom != null){
         this.fromDealerID = dealerFrom['orgID'];
-      }         
+      }
     });
 
     this.sharedServices.selectedToDealer$.pipe(takeUntil(this.destroy$)).subscribe((dealerTo) => {  
-      if(dealerTo != null)
-      {
+      if(dealerTo != null){
         this.toDealerID = dealerTo['orgID'];
-      }         
+      }
     }); 
 
     this.sharedServices.toggleInvoice$.pipe(takeUntil(this.destroy$)).subscribe((toggle) => {
@@ -427,13 +418,12 @@ export class CurrentBcrComponent implements OnInit, AfterViewInit{
     this.sharedServices.editedTransfers$.pipe(takeUntil(this.destroy$)).subscribe((editedTransfer) => {
       if(editedTransfer.length != 0)
       {
-
-        if(editedTransfer['claim_status'] != 'Draft')
-        {
+        //console.log('VL edit Transfer', editedTransfer);
+        this.bcr_submitted_status = false;
+        if(editedTransfer['claim_status'] != 'Draft'){
           this.bcr_submitted_status = true;
         }
-
-
+        
         this.selectedInvoices = editedTransfer['claim_items'].map((item: any): selectedInvoices => ({
           sku: item.sku,
           model: item.model,                          
@@ -657,11 +647,18 @@ export class CurrentBcrComponent implements OnInit, AfterViewInit{
     {
       this.selectedInvoices = this.selectedInvoices.filter(i => i != element);
       this.defineTableDataSource(this.selectedInvoices);
-
-      this.totalCosts.billed = element.billed;
-      this.totalCosts.cost = element.current;
-      this.totalCosts.credit = element.credit;
-      this.totalCosts.type = "subtract";
+      //console.log('VL remove', element);
+      if (this.selectedInvoices.length === 0) {
+        this.totalCosts.billed = 0;
+        this.totalCosts.cost = 0;
+        this.totalCosts.credit = 0;
+        this.totalCosts.type = "multiply";
+      } else {
+        this.totalCosts.billed = element.billed;
+        this.totalCosts.cost = element.current;
+        this.totalCosts.credit = element.credit;
+        this.totalCosts.type = "subtract";
+      }
 
       this.sharedServices.updateCosts(this.totalCosts);
       
@@ -699,6 +696,7 @@ export class CurrentBcrComponent implements OnInit, AfterViewInit{
       if(!(this.selectedInvoices.some((i) => i.invoice == '' || i.invoice == null || i.serial.trim() == '' || i.serial == null)))
       {
         this.loaderService.show();
+        this.bcr_submitted_status = true; // 🔐 Disable button
         const bcr_details = {
           header: {
             orgFromID: this.transferType!='3'?this.fromDealerID:"DEMO",  // From dealer ID
@@ -756,6 +754,7 @@ export class CurrentBcrComponent implements OnInit, AfterViewInit{
                 panelClass: ['green-snackbar'] // Apply the custom CSS class here
               });
               this.loaderService.hide();
+              this.bcr_submitted_status = false; // ✅ Re-enable button
             }
           },
           error: (error) => {
@@ -768,6 +767,7 @@ export class CurrentBcrComponent implements OnInit, AfterViewInit{
               panelClass: ['red-snackbar'] // Apply the custom CSS class here
             });
             this.loaderService.hide();
+            this.bcr_submitted_status = false; // ✅ Re-enable button
           }
         });
       }
@@ -897,6 +897,102 @@ export class CurrentBcrComponent implements OnInit, AfterViewInit{
       this.total_credit = this.total_credit + Number(invoiceElement.credit);
       this.total_cost = this.total_cost + Number(invoiceElement.current);
       this.total_sell_amount = this.total_sell_amount + Number(invoiceElement.sell_amount);
+    });
+  }
+
+  onBulkFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const allowedTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/csv'];
+      if (allowedTypes.includes(file.type)) {
+        this.selectedBulkFile = file;
+        this.bulkFileError = '';
+      } else {
+        this.selectedBulkFile = null;
+        this.bulkFileError = 'Please upload a valid Excel or CSV file.';
+      }
+    }
+  }
+
+  importBulk(): void {
+    if (!this.selectedBulkFile) {
+      this.bulkFileError = 'Please select a file to import.';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('bulkFile', this.selectedBulkFile);
+
+    this.apiServices.import_bulk(formData).subscribe({
+      next: (response) => {
+        // Check for backend 'status' value
+        if (response.status === 'error') {
+          const message = response.message || 'An unknown error occurred during import.';
+          this.importErrors = response.errors || [];
+
+          this.snackBar.open(message, 'Close', {
+            duration: 5000,
+            horizontalPosition: 'right',
+            verticalPosition: 'top',
+            panelClass: ['red-snackbar']
+          });
+          return; // Stop processing further
+        }
+        // Success case
+        this.importErrors = []; // clear previous errors
+        // Continue with success case
+        const invoices: selectedInvoices[] = (response.data || []).map(item => ({
+          sku: item.sku || '',
+          model: '0',
+          description: item.description || '',
+          invoice: item.invoice?.toString() || '',
+          serial: item.serial || '',
+          billed: item.billed ?? 0,
+          msrp: item.credit ?? 0,
+          current: item.current ?? 0,
+          credit: item.credit ?? 0,
+          sell_amount: item.sell_amount ?? 0,
+          note: 'bulk imported',
+          isManualEntry: false,
+          isInventory: false
+        }));
+
+        this.savedInvoices = invoices;
+        this.selectedInvoices = invoices;
+        this.selectedInvoiceSource.data = invoices;
+        this.selectedInvoiceSource = new MatTableDataSource(invoices);
+
+        const modalElement = document.getElementById('importBulkModal');
+        if (modalElement) {
+          const modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+          modalInstance.hide();
+        }
+
+        // Reset file input
+        const inputElement = <HTMLInputElement>document.getElementById('bulkFile');
+        if (inputElement) {
+          inputElement.value = ''; // Clear file input
+        }
+        this.selectedBulkFile = null;
+        this.bulkFileError = '';
+
+        this.snackBar.open('Bulk Import Updated Successfully.', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+          panelClass: ['green-snackbar']
+        });
+      },
+      error: (error) => {
+        console.error('Import failed:', error);
+        this.snackBar.open('Failed to import the data.', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+          panelClass: ['red-snackbar']
+        });
+      }
     });
   }
   

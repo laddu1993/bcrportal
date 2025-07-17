@@ -288,6 +288,10 @@ export class ApiCallsService {
     }
   }
 
+  import_bulk(fileData: FormData): Observable<any> {
+    return this.http.post(this.crm_url + 'no_auth_import_bulk', fileData);
+  }
+
   // For Local testing without authentication
   // getDealerDetails(account_number): Observable<any[]>{
   //   return this.http.get<any[]>(this.crm_url+(this.isLocal?this.noAuth:'')+'dealer_search?acctNum='+account_number);

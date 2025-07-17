@@ -26,6 +26,7 @@ export class SharedServicesService {
   private claimID;
   private savedInvoices;
   private bcr_submitted_status;
+  private sharedValues: any = {};
 
   // constructor() { }
 
@@ -122,6 +123,28 @@ export class SharedServicesService {
 
   private submitBCRStatusSource = new Subject<boolean>();
   submitBCRStatus$ = this.submitBCRStatusSource.asObservable();
+
+  private filterSubject = new BehaviorSubject<string | null>(null);
+  filter$ = this.filterSubject.asObservable();
+
+  private transferDetailsTrigger$ = new Subject<void>();
+  public transferDetailsTriggerObservable$ = this.transferDetailsTrigger$.asObservable();
+
+  triggerLoadTransferDetails() {
+    this.transferDetailsTrigger$.next();
+  }
+
+  setFilter(filterValue: string) {
+    this.filterSubject.next(filterValue);
+  }
+
+  setValues(values: any): void {
+    this.sharedValues = values;
+  }
+
+  getValues(): any {
+    return this.sharedValues;
+  }
 
   notifyCreateButtonClick(): void {
     this.createButtonClickSubject.next();

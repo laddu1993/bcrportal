@@ -158,12 +158,14 @@ export class ListTransfersComponent implements AfterViewInit{
   {
     this.selectedFilter = event.target.value;
     this.filterTransfers();
+    // Call transferSelected with an empty transferElement to reset
+    this.sharedServices.setFilter(this.selectedFilter); // share the value
   }
 
   transferSelected(transferElement,event)
   {
     const table = document.getElementById('list-transfer-table');
-
+    //console.log('VL Transfers', transferElement);
     if (table) 
     {
       const rows = table.getElementsByTagName('tr');

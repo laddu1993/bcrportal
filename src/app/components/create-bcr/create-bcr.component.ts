@@ -2,6 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SharedServicesService } from '../../services/shared-services.service';
 import { ApiCallsService } from '../../services/api-calls.service';
+import { environment } from '../../../environments/environment';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID } from '@angular/core';
 
 interface LoginResponse {
   token: string;
@@ -20,18 +23,22 @@ export class CreateBcrComponent implements OnInit, OnDestroy {
   typeSelected = false;
   fromDealerExist = false;
   showInvoice = false;
+  isLocal = environment.local;
 
   // Subscription management
   private toggleInvoiceSubscription: Subscription | undefined;
 
   constructor(
     private sharedServices: SharedServicesService,
-    private apiServices: ApiCallsService
-  ) {
-    this.login(); // Login called in constructor as requested
-  }
+    private apiServices: ApiCallsService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   ngOnInit(): void {
+    if (!this.isLocal && isPlatformBrowser(this.platformId)) {
+      this.login(); // Only run on browser
+    }
+
     // Set initial BCR status
     this.sharedServices.updateBCRStatus(this.BCR_STATUS);
     
@@ -58,6 +65,8 @@ export class CreateBcrComponent implements OnInit, OnDestroy {
       next: (res: LoginResponse) => {
         if (res?.token) {
           localStorage.setItem('loginToken', res.token);
+          // ✅ Trigger event after successful login
+          this.sharedServices.triggerLoadTransferDetails();
         } else {
           console.warn('Login failed: No token received');
           this.handleLoginError('No token received');

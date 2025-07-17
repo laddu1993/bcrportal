@@ -25,6 +25,7 @@ import { ConfirmationPopupComponent } from './components/confirmation-popup/conf
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ErrorComponentComponent } from './components/error-component/error-component.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { ErrorComponentComponent } from './components/error-component/error-comp
     MatSnackBarModule,
     ReactiveFormsModule,
     MatSortModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatDialogModule
   ],
   providers: [
     provideClientHydration(),
