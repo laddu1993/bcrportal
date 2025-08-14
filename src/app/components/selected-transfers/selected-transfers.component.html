@@ -1,0 +1,208 @@
+<div class="accordion-item active">
+  <div class="accordion-header transfer-mob-accordion">
+    <h1>Viewing <span id="ref_number">{{ claim_reference }}</span></h1>
+    <div class="btn-panel btn-panel-wrp">
+      <div class="btn-panel export-buttons"> 
+        <button class="text-btn" data-bs-toggle="modal" [disabled]="disableExport" data-bs-target="#exportBulkModal">
+          <i class="fas fa-file"></i>Export as PDF
+        </button>
+      </div>
+      <!-- <div class="btn-panel print-buttons"> 
+        <button class="text-btn" [disabled]="selectedTransfers.length == 0" (click)="printTransfer()">
+          <i class="fas fa-print"></i>Print
+        </button>
+      </div> -->
+      <div class="btn-panel crud-buttons"> 
+          <button 
+            class="secondary_btn" 
+            data-bs-toggle="modal"
+            data-bs-target="#delete-popup"
+            (click)="deleteClaim()"
+            [disabled]="disableDelete"
+          >Delete</button>
+          
+      </div>
+      <div class="btn-panel">
+        <button class="primary_btn" (click)="editTransfer()" [disabled]="disableDelete">Edit</button>
+      </div>
+    </div>
+    <button
+        class="accordion-button"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseTwo"
+        aria-expanded="true"
+        aria-controls="collapseTwo"
+      >
+        <i class="fas fa-minus"></i>
+        <i class="fas fa-plus"></i>
+      </button>
+  </div>
+  <div
+      id="collapseTwo"
+      class="accordion-collapse collapse show"
+    >
+    <div class="accordion-body">
+      <app-skeleton-loader *ngIf="isSelectedTransferLoading"></app-skeleton-loader>
+          <p *ngIf="!isSelectedTransferLoading && emptyInvoiceTransfer" class="show-norecords">There are no records to show right now. Check back soon!</p>
+          <div [ngStyle]="{'display': isSelectedTransferLoading || emptyInvoiceTransfer? 'none': 'block'}">
+        <table id="selected-transfers" matSort mat-table [dataSource]="transferInvoiceDataSource" class="table-husqvarna invoice_table table selected_invoice_transfer_table">
+          <tbody>
+            <ng-container matColumnDef="sku">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> SKU </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">SKU </span> {{ element.sku }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="invoice">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Invoice # </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">Invoice # </span> {{ element.invoice }} </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Description </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">Description </span> {{ element.description }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="billed">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Billed </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">Billed </span> {{ (element.billed != null?element.billed:0) | currency: 'USD':'symbol':'1.2-2' }} </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="current">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Current </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">Current </span> {{ (element.current != null?element.current:0) | currency: 'USD':'symbol':'1.2-2' }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="credit">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Credit </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">Credit </span> {{ (element.credit != null?element.credit:0) | currency: 'USD':'symbol':'1.2-2' }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="sell_price">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Sell </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">Sell </span> {{ (element.sell_price != null?element.sell_price:0) | currency: 'USD':'symbol':'1.2-2' }} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedTransferInvoiceColumns"></tr>
+            <tr mat-row *matRowDef="let element; columns: displayedTransferInvoiceColumns;"></tr>
+          </tbody>
+        </table>
+        <mat-paginator 
+          [length]="selectedTransfers.length"
+          [pageSize]="5"
+          [pageSizeOptions]="[5, 10, 25, 100]"
+          aria-label="Select page"
+        ></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="pdfContent" class="pdfContent" style="display: none; margin-top: 40px;" #printTemplate>
+  <!-- Part 1: Transfer Details -->
+  <div class="pdf-header">
+      <div class="header-center">
+          <h2>Husqvarna Merchandise Transfer</h2>
+      </div>
+      <div class="header-right" style="text-align: right;">
+          <p style="margin-bottom: 3px; color: #273a60;"><strong>Transfer From:</strong> {{ fromDealer }}</p>
+          <p style="margin-bottom: 3px; color: #273a60;"><strong>Transfer To:</strong> {{ toDealer }}</p>
+      </div>
+  </div>
+
+  <!-- Part 2: Transfer Items Table -->
+  <div class="pdf-table">
+    <table class="table-husqvarna table invoice_table" style="border:1px solid #f4f4f3;">
+        <thead>
+            <tr>
+              <th *ngIf="selectedFields.includes('SKU')">SKU</th>
+              <th *ngIf="selectedFields.includes('Invoice')">Invoice #</th>
+              <th *ngIf="selectedFields.includes('Serial')">Serial #</th>
+              <th *ngIf="selectedFields.includes('Description')">Description</th>
+              <th *ngIf="selectedFields.includes('Billed')">Billed</th>
+              <th *ngIf="selectedFields.includes('Current')">Current</th>
+              <th *ngIf="selectedFields.includes('Credit')">Credit</th>
+              <th *ngIf="selectedFields.includes('Sell')">Sell</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let elementRow of selectedTransfers;">
+            <td  *ngIf="selectedFields.includes('SKU')">{{ elementRow.sku }}</td>
+            <td *ngIf="selectedFields.includes('Invoice')">{{ elementRow.invoice }}</td>
+            <td *ngIf="selectedFields.includes('Serial')">{{ elementRow.serial }}</td>
+            <td *ngIf="selectedFields.includes('Description')">{{ elementRow.description }}</td>
+            <td *ngIf="selectedFields.includes('Billed')">{{ elementRow.billed | currency: 'USD':'symbol':'1.2-2' }}</td>
+            <td *ngIf="selectedFields.includes('Current')">{{ elementRow.current | currency: 'USD':'symbol':'1.2-2' }}</td>
+            <td *ngIf="selectedFields.includes('Credit')">{{ elementRow.credit | currency: 'USD':'symbol':'1.2-2' }}</td>
+            <td *ngIf="selectedFields.includes('Sell')">{{ elementRow.sell_price | currency: 'USD':'symbol':'1.2-2' }}</td>
+          </tr>
+          <tr class="selected-row">
+            <td><b>Total</b></td>
+            <td *ngIf="selectedFields.includes('SKU')"></td>
+            <td *ngIf="selectedFields.includes('Invoice')"></td>
+            <td *ngIf="selectedFields.includes('Serial')"></td>
+            <td *ngIf="selectedFields.includes('Billed')"><b>{{ total_billed | currency: 'USD':'symbol':'1.2-2' }}</b></td>
+            <td *ngIf="selectedFields.includes('Current')"><b>{{ total_current | currency: 'USD':'symbol':'1.2-2' }}</b></td>
+            <td *ngIf="selectedFields.includes('Credit')"><b>{{ total_credit | currency: 'USD':'symbol':'1.2-2' }}</b></td>
+            <td *ngIf="selectedFields.includes('Sell')"><b>{{ total_sell_price | currency: 'USD':'symbol':'1.2-2' }}</b></td>
+          </tr>
+        </tbody>
+    </table>
+  </div>
+
+  <!-- Part 3: Signature Section -->
+  <div class="signature-section" style="text-align: right; display: flex; justify-content: flex-end;">
+    <div class="signature">
+        <label for="signature" style="text-align: left;">Signed:</label>
+        <textarea id="signature" rows="4" cols="40"></textarea>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="exportBulkModal"
+  data-bs-backdrop="static"
+  tabindex="-1"
+  aria-labelledby="exportBulkModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exportBulkModalLabel">Download Export</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="roleSelect" class="form-label">Export As <span class="color-red">*</span></label>
+          <select class="form-select" [(ngModel)]="selectedRole">
+            <option value="" disabled>Select Role</option>
+            <option value="buyer">Buyer</option>
+            <option value="seller">Seller</option>
+            <option value="husqvarna">Husqvarna</option>
+          </select>
+
+          <button class="btn btn-primary mt-2" [disabled]="!selectedRole || isDownloading" (click)="getprintTransfer()">
+            Download Transfer as {{ selectedRole | titlecase }}
+          </button>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="secondary_btn"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

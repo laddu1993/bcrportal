@@ -1,0 +1,19 @@
+<!-- Loading Overlay -->
+<div *ngIf="isLoading" class="loading-overlay">
+  <app-progress-bar *ngIf="isLoading" class="fixed-progress-bar"></app-progress-bar>
+</div>
+
+<!-- App Header -->
+<header>
+  <a class="logo">
+    <img [src]="assetUrl + 'logo.svg'" alt="Husqvarna Logo"/>
+  </a>
+  <b *ngIf="!environment">(UAT)</b>
+</header>
+<!-- Header Component End -->
+
+<!-- Router View -->
+<section>
+  <router-outlet></router-outlet>
+  <!-- <app-create-bcr></app-create-bcr> -->
+</section>

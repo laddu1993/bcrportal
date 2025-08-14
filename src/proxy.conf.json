@@ -1,0 +1,11 @@
+{
+    "/api": {
+      "target": "https://crmapps.husqvarnagroup.com/uat_bcr",
+      "secure": true,
+      "changeOrigin": true,
+      "pathRewrite": {
+        "^/api": ""
+      }
+    }
+}
+  

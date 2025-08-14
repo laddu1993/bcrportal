@@ -1,0 +1,17 @@
+<div class="card-small">
+  <app-credit-and-bill></app-credit-and-bill>
+</div>
+  <!--  *ngIf="bcr_exist && dealerFromValue && dealerToValue" -->
+  <div class="accordion" id="accordionExample">
+    <div class="card-small" [ngStyle]="{'visibility': !showInvoice? 'hidden': 'visible'}">
+      <app-invoice></app-invoice>
+    </div>
+    <div class="card-small" [ngStyle]="{'visibility': !showInvoice? 'hidden': 'visible'}">
+      <app-current-bcr></app-current-bcr>
+    </div>
+  </div>
+
+<app-edit-modal></app-edit-modal>
+<app-details-modal></app-details-modal>
+<app-dealer-modal></app-dealer-modal>
+<app-confirmation-popup></app-confirmation-popup>

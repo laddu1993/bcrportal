@@ -1,0 +1,88 @@
+<!-- From Search Model -->
+<div
+  class="modal fade search-modal"
+  id="searchmodal"
+  data-bs-backdrop="static"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 id="exampleModalLabel">Search Results</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <!-- <p *ngIf="dealerEmpty && !isDealerLoading" style="text-align: center;">Sorry, No results Found</p> -->
+        <div *ngIf="dealerEmpty && !isDealerLoading" class="no-records-message">
+          <img src="./images/no-data-icon.svg" alt="No data available">
+          <h3>No records found.</h3>
+        </div>
+      <app-skeleton-loader *ngIf="isDealerLoading"></app-skeleton-loader>
+      <div [ngStyle]="{'display' : isDealerLoading || dealerEmpty? 'none': 'block'}">
+        <table id="dealerTable"  mat-table [dataSource]="dataSource" matSort class="table-husqvarna table dealer_table invoice_table">
+          <tbody>
+            <ng-container matColumnDef="account">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Account </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">Account</span> <button>{{ element.account }}</button> </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">Name</span> {{ element.name }} </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="city">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> City </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">City</span> {{ element.city }} </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="state">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> State </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">State</span> {{ element.state }} </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="active">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Active </th>
+              <td mat-cell *matCellDef="let element"><span class="label-item">Active</span> {{ element.active }} </td>
+            </ng-container>
+        
+            <!-- Table Header and Body -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr class="table-row" mat-row *matRowDef="let row; columns: displayedColumns;" (click)="setDealer(row)"></tr>
+          </tbody>
+        </table>
+        <div>
+          <mat-paginator 
+            [length]="dealerList.length"
+            [pageSize]="5"
+            [pageIndex]="0"
+            [pageSizeOptions]="[5, 10, 25, 100]"
+            aria-label="Select page"
+          ></mat-paginator>
+        </div>
+      </div>
+
+      <!-- *ngIf="!fromDealerEmpty && !loading" -->
+      
+      <!-- <mat-paginator 
+        [length]="dataSource.data.length"
+        [pageSize]="2"
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        aria-label="Select page">
+      </mat-paginator> -->
+      <!-- <div class="modal-footer">
+        <button type="button" class="secondary_btn" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="primary_btn">Save</button>
+      </div> -->
+    </div>
+  </div>
+</div>

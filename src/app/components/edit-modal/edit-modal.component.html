@@ -1,0 +1,377 @@
+<!-- Edit / Manual entry modal -->
+<div
+  class="modal fade"
+  id="editmanualentymodal"
+  data-bs-backdrop="static"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content" *ngIf="manualEntry">
+      <div class="modal-header">
+        <h1 id="exampleModalLabel">Add Entry</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="addForm">
+          <div class="row">
+            <div class="col-sm-6 col-12 mb-2">
+              <label for="exampleInputEmail1">SKU <span class="color-red">*</span></label>
+              <div class="input-group">
+                <input
+                  formControlName="sku"
+                  type="text"
+                  class="form-control"
+                  placeholder=""
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                />
+              </div>
+              <div *ngIf="addForm.get('sku')?.touched && addForm.get('sku')?.invalid" class="text-danger">
+                <small *ngIf="addForm.get('sku')?.errors?.['required']">SKU is required.</small>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-12 mb-2">
+              <label for="exampleInputEmail1">Invoice # <span class="color-red">*</span></label>
+              <div class="input-group">
+                <input
+                  formControlName="invoice"
+                  type="text"
+                  class="form-control"
+                  placeholder=""
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                />
+              </div>
+              <div *ngIf="addForm.get('invoice')?.touched && addForm.get('invoice')?.invalid" class="text-danger">
+                <small *ngIf="addForm.get('invoice')?.errors?.['required']">Invoice # is required.</small>
+                <small *ngIf="addForm.get('invoice')?.errors?.['nonZero']">Invalid input: must be greater than 0</small>
+                <small *ngIf="addForm.get('invoice')?.errors?.['pattern']">Spaces are not allowed in Invoice #.</small>
+                <small *ngIf="addForm.get('invoice')?.errors?.['specialCharacters']">Special characters are not allowed in Invoice #.</small>
+              </div>
+            </div>
+
+            <div class="col-12 mb-2">
+              <label for="exampleInputEmail1">Description</label>
+              <div class="input-group">
+                <textarea maxlength="50" formControlName="description"></textarea>
+              </div>
+              <div *ngIf="addForm.get('description')?.touched && addForm.get('description')?.invalid" class="text-danger">
+                <small *ngIf="addForm.get('description')?.errors?.['maxlength']">Description must not exceed 50 characters.</small>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-12 mb-2">
+              <label for="exampleInputEmail1">Billed <span class="color-red">*</span></label>
+              <div class="input-group">
+                <input
+                  formControlName="billed"
+                  type="text"
+                  class="form-control"
+                  placeholder=""
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                />
+              </div>
+              <div *ngIf="addForm.get('billed')?.touched && addForm.get('billed')?.invalid" class="text-danger">
+                <small *ngIf="addForm.get('billed')?.errors?.['required']">Billed Price is required.</small>
+                <small *ngIf="addForm.get('billed')?.errors?.['pattern']">Billed Price must contain only numbers.</small>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-12 mb-2">
+              <label for="exampleInputEmail1">Current <span class="color-red">*</span></label>
+              <div class="input-group">
+                <input
+                  formControlName="current"
+                  type="text"
+                  class="form-control"
+                  placeholder=""
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                />
+              </div>
+              <div *ngIf="addForm.get('current')?.touched && addForm.get('current')?.invalid" class="text-danger">
+                <small *ngIf="addForm.get('current')?.errors?.['required']">Current Price is required.</small>
+                <small *ngIf="addForm.get('current')?.errors?.['pattern']">Current Price must contain only numbers.</small>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-12 mb-2">
+              <label for="exampleInputEmail1">Credit Amount <span class="color-red">*</span></label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  formControlName="credit"
+                  class="form-control"
+                  placeholder=""
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                />
+              </div>
+              <div *ngIf="addForm.get('credit')?.touched && addForm.get('credit')?.invalid" class="text-danger">
+                <small *ngIf="addForm.get('credit')?.errors?.['required']">Credit amount is required.</small>
+                <small *ngIf="addForm.get('credit')?.errors?.['pattern']">Credit amount must contain only numbers.</small>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-12 mb-2">
+              <label for="exampleInputEmail1">Sell Amount <span class="color-red">*</span></label>
+              <div class="input-group">
+                <input
+                  name="invoice_sell_amount"
+                  formControlName="sell_amount"
+                  type="text"
+                  class="form-control"
+                  placeholder=""
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                />
+              </div>
+              <div *ngIf="addForm.get('sell_amount')?.touched && addForm.get('sell_amount')?.invalid" class="text-danger">
+                <small *ngIf="addForm.get('sell_amount')?.errors?.['required']">Sell amount is required.</small>
+                <small *ngIf="addForm.get('sell_amount')?.errors?.['pattern']">Sell amount must contain only numbers.</small>
+              </div>
+              <!-- <div *ngIf="addForm.errors?.['validateSellAmount'] && addForm.get('serial')?.touched" class="text-danger">
+                <small>Sell amount must be greater than Current amount.</small>
+              </div> -->
+            </div>
+
+            <div class="col-12 mb-2">
+              <label for="exampleInputEmail1">Serial # <span class="color-red">*</span></label>
+              <div class="input-group">
+                <input
+                  name="invoice_serial"
+                  formControlName="serial"
+                  type="text"
+                  class="form-control"
+                  placeholder=""
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                />
+              </div>
+              <div *ngIf="addForm.get('serial')?.touched && addForm.get('serial')?.invalid" class="text-danger">
+                <small *ngIf="addForm.get('serial')?.errors?.['required']">Serial # is required.</small>
+                <small *ngIf="addForm.get('serial')?.errors?.['minlength']">The serial field must be at least 4 characters in length.</small>
+                <small *ngIf="addForm.get('serial')?.errors?.['nonZero']">Invalid input: must be greater than 0</small>
+                <small *ngIf="addForm.get('serial')?.errors?.['leadingSpace']">Leading spaces are not allowed in Serial #.</small>
+                <small *ngIf="addForm.get('serial')?.errors?.['trailingSpace']">Trailing spaces are not allowed in Serial #.</small>
+                <small *ngIf="addForm.get('serial')?.errors?.['specialCharacters']">Special characters are not allowed in Serial #.</small>
+                <!-- <small *ngIf="addForm.get('serial')?.errors?.['pattern']">Spaces are not allowed in Serial #.</small> -->
+              </div>
+            </div>
+
+            <div class="col-12 mb-2">
+              <label for="exampleInputEmail1">Note</label>
+              <div class="input-group">
+                <textarea formControlName="note"></textarea>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button (click)="resetForm()" type="button" class="secondary_btn">
+          Clear
+        </button>
+        <button type="button" class="primary_btn" (click)="addBCREntry()">Save</button>
+      </div>
+    </div>
+    <div class="modal-content" *ngIf="!manualEntry">
+      <div class="modal-header">
+        <h1 id="exampleModalLabel">Edit Entry</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="closePopup()"
+        ></button>
+      </div>
+      <div class="modal-body" *ngIf="currentElementEdited != null">
+        <form [formGroup]="editForm">
+          <div class="row">
+            <div class="col-sm-6 col-12 mb-2">
+              <label for="exampleInputEmail1">SKU <span class="color-red">*</span></label>
+              <div class="input-group">
+                <input
+                  formControlName="sku"
+                  type="text"
+                  class="form-control"
+                  placeholder=""
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  readonly
+                  value="{{ currentElementEdited.sku }}"
+                />
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-12 mb-2">
+              <label for="exampleInputEmail1">Invoice # <span class="color-red">*</span></label>
+              <div class="input-group">
+                <input
+                  formControlName="invoice"
+                  type="text"
+                  class="form-control"
+                  placeholder=""
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  [readonly]="!currentElementEdited.isInventory"
+                  value="{{ currentElementEdited.invoice }}"
+                />
+              </div>
+              <div *ngIf="editForm.get('invoice')?.touched && editForm.get('invoice')?.invalid" class="text-danger">
+                <small *ngIf="editForm.get('invoice')?.errors?.['required']">Invoice # is required.</small>
+                <small *ngIf="editForm.get('invoice')?.errors?.['nonZero']">Invalid input: must be greater than 0</small>
+                <small *ngIf="editForm.get('invoice')?.errors?.['pattern']">Spaces are not allowed in Invoice #.</small>
+                <small *ngIf="editForm.get('invoice')?.errors?.['specialCharacters']">Special characters are not allowed in Invoice #.</small>
+              </div>
+            </div>
+
+            <div class="col-12 mb-2">
+              <label for="exampleInputEmail1">Description</label>
+              <div class="input-group">
+                <textarea readonly formControlName="description">
+                  {{ currentElementEdited.description.trim() }}
+                </textarea>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-12 mb-2">
+              <label for="exampleInputEmail1">Billed <span class="color-red">*</span></label>
+              <div class="input-group">
+                <input
+                  formControlName="billed"
+                  type="text"
+                  class="form-control"
+                  placeholder=""
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  [readonly]="!currentElementEdited.isInventory"
+                  value="{{ currentElementEdited.billed }}"
+                />
+              </div>
+              <div *ngIf="editForm.get('billed')?.touched && editForm.get('billed')?.invalid" class="text-danger">
+                <small *ngIf="editForm.get('billed')?.errors?.['required']">Billed amount is required.</small>
+                <small *ngIf="editForm.get('billed')?.errors?.['pattern']">Billed amount must contain only numbers.</small>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-12 mb-2">
+              <label for="exampleInputEmail1">Current <span class="color-red">*</span></label>
+              <div class="input-group">
+                <input
+                  formControlName="current"
+                  type="text"
+                  class="form-control"
+                  placeholder=""
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  readonly
+                  value="{{ currentElementEdited.current }}"
+                />
+              </div>
+              <div *ngIf="editForm.get('current')?.touched && editForm.get('current')?.invalid" class="text-danger">
+                <small *ngIf="editForm.get('current')?.errors?.['required']">Current amount is required.</small>
+                <small *ngIf="editForm.get('current')?.errors?.['pattern']">Current amount must contain only numbers.</small>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-12 mb-2">
+              <label for="exampleInputEmail1">Credit Amount <span class="color-red">*</span></label>
+              <div class="input-group">
+                <input
+                  formControlName="credit"
+                  type="text"
+                  class="form-control"
+                  placeholder=""
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  [readonly]="!currentElementEdited.isInventory && !canEditCredit"
+                  value="{{ currentElementEdited.credit }}"
+                />
+              </div>
+              <div *ngIf="editForm.get('credit')?.touched && editForm.get('credit')?.invalid" class="text-danger">
+                <small *ngIf="editForm.get('credit')?.errors?.['required']">Credit amount is required.</small>
+                <small *ngIf="editForm.get('credit')?.errors?.['pattern']">Credit amount must contain only numbers.</small>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-12 mb-2">
+              <label for="exampleInputEmail1">Sell Amount <span class="color-red">*</span></label>
+              <div class="input-group">
+                <input
+                  name="invoice_sell_amount"
+                  formControlName="sell_amount"
+                  type="text"
+                  class="form-control"
+                  placeholder=""
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  value="{{ currentElementEdited.sell_amount || 0 }}"
+                  #sellAmountInput
+                />
+              </div>
+              <div *ngIf="editForm.get('sell_amount')?.touched && editForm.get('sell_amount')?.invalid" class="text-danger">
+                <small *ngIf="editForm.get('sell_amount')?.errors?.['required']">Sell amount is required.</small>
+                <small *ngIf="editForm.get('sell_amount')?.errors?.['pattern']">Sell amount must contain only numbers.</small>
+              </div>
+              <!-- <p *ngIf="!validSellAmount" class="text-danger">
+                <small>Sell amount cannot be less than the current value of {{ currentElementEdited.current }}.</small>
+              </p> -->
+            </div>
+
+            <div class="col-12 mb-2">
+              <!-- [readOnly]="!currentElementEdited.isManualEntry && !currentElementEdited.isInventory && currentElementEdited.serial != ''" -->
+              <label for="exampleInputEmail1">Serial # <span class="color-red">*</span></label>
+              <div class="input-group">
+                <input
+                  name="invoice_serial"
+                  formControlName="serial"
+                  type="text"
+                  class="form-control"
+                  placeholder=""
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  value="{{ currentElementEdited.serial?currentElementEdited.serial.trim():currentElementEdited.serial }}"
+                />
+              </div>
+              <div *ngIf="editForm.get('serial')?.touched && editForm.get('serial')?.invalid" class="text-danger">
+                <small *ngIf="editForm.get('serial')?.errors?.['required']">Serial # is required.</small>
+                <small *ngIf="editForm.get('serial')?.errors?.['minlength']">The serial field must be at least 4 characters in length.</small>
+                <small *ngIf="editForm.get('serial')?.errors?.['nonZero']">Invalid input: must be greater than 0</small>
+                <small *ngIf="editForm.get('serial')?.errors?.['leadingSpace']">Leading spaces are not allowed in Serial #.</small>
+                <small *ngIf="editForm.get('serial')?.errors?.['trailingSpace']">Trailing spaces are not allowed in Serial #.</small>
+                <small *ngIf="editForm.get('serial')?.errors?.['specialCharacters']">Special characters are not allowed in Serial #.</small>
+                <!-- <small *ngIf="editForm.get('serial')?.errors?.['pattern']">Spaces are not allowed in Serial #.</small> -->
+              </div>
+            </div>
+
+            <div class="col-12 mb-2">
+              <label for="exampleInputEmail1">Note</label>
+              <div class="input-group">
+                <textarea formControlName="note"></textarea>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="secondary_btn" (click)="resetEditForm()" data-bs-dismiss="modal">
+          Clear
+        </button> -->
+        <button (click)="updateBCR()" type="button" class="primary_btn">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

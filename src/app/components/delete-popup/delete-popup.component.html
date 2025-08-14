@@ -1,0 +1,32 @@
+<!-- DELETE TEMPLATE CONFIRMATION POPUP -->
+<div
+  class="modal fade"
+  id="delete-popup"
+  tabindex="-1"
+  data-bs-backdrop="static"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+    <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 id="exampleModalLabel">Delete Item?</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <h6>Are you sure you want to delete this item?</h6>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="secondary_btn" data-bs-dismiss="modal">
+              Close
+            </button>
+            <button type="button" class="primary_btn" (click)="confirmDelete()">Delete</button>
+          </div>
+        </div>
+      </div>
+</div>

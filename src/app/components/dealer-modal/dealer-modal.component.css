@@ -1,0 +1,22 @@
+
+
+.table-row:hover {
+    cursor: pointer;
+    background-color: #f1f1f1;
+}
+/*--New--*/
+.search-modal .modal-dialog {
+    max-width: 800px;
+}
+
+.dealer_table{
+    table-layout: fixed;
+}
+
+.no-records-message {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #555555;
+    font-family: Roboto, sans-serif;
+  }

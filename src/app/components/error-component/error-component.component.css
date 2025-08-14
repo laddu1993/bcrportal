@@ -1,0 +1,81 @@
+mat-card {
+    max-width: 400px;
+    margin: 50px auto;
+    text-align: center;
+  }
+  .heading-1{
+    font-size: 3rem;
+  }
+  .heading-3{
+    font-size: 2rem;
+  }
+  .heading-4{
+    margin-top: 10px;
+  }
+
+
+.pg-outer-container {
+    background-color: #f4f4f3 !important;
+    padding: 16px;
+    min-height: calc(100vh - 67px);
+    visibility: visible !important; /* Ensure visibility is always applied */
+    display: block !important;      /* Ensure the element is always rendered */
+}
+
+.content-container {
+    background-color: white;
+    border-radius: 6px;
+    padding: 24px;
+    border: 1px solid grey;
+    position: relative;
+    &.content-container--top-zero-padding {
+        padding-top: 0;
+    }
+    &.content-container--full-height {
+        min-height: calc(100vh - 115px);
+    }
+}
+
+.no-data-block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.no-data-block h2 {
+    color: #273A60; /* Assuming main-title-blue sets a blue color */
+    font-size: 2rem; /* Adjust according to the actual mixin settings */
+    margin-bottom: 8px;
+}
+
+.no-data-block h3 {
+    color: #273A60; /* Assuming main-title-blue16 sets a similar blue color */
+    font-size: 2rem; /* Adjust according to the actual mixin settings */
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.no-data-block h4 {
+    color: #3D3D3C; /* Assuming main-title-blue16 sets a similar blue color */
+    font-size: 16px; /* Adjust according to the actual mixin settings */
+    font-weight: normal;
+    margin-bottom: 8px;
+}
+
+.no-data-block img, 
+.no-data-block p {
+    margin-bottom: 24px;
+}
+
+.home_button {
+    border-color: #3d3d3c;
+    color: #3d3d3c;
+    background-color: transparent;
+}
+
+.home_button:hover {
+    background-color: #f4f4f3;
+    border-color: #3d3d3c;
+}

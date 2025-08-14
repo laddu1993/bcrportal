@@ -1,0 +1,147 @@
+
+    <!-- <div class="card"> -->
+      <!-- Card main header Component start -->
+      <div class="main_header">
+        <h1>Credit & Re-bill Summary : Agent Portal</h1>
+        <div class="btn-panel">
+          <button (click)="clearValues()" class="secondary_btn" *ngIf="bcr_status == 'create_bcr'">Clear</button>
+          <!-- Current BCR Button -->
+          <button 
+            class="primary_btn" 
+            *ngIf="bcr_status_url === 'create_bcr'" 
+            [routerLink]="['/current_bcr']" 
+            [queryParams]="{ aid: account_id }" 
+            (click)="viewCurrentBCR()">
+            Current BCR
+          </button>
+        </div>
+      </div>
+      <!-- Card main header Component end -->
+  
+      <!-- Search Component Start -->
+  
+      <div class="search-section">
+        <div class="data_row">
+          <div class="row">
+            <div class="col-md-2 col-12 mb-2">
+              <label style="font-weight: bold;">Type</label>
+              <!-- [(ngModel)]="selectedValue" -->
+              <select [(ngModel)]="selectedValue" [disabled]="bcr_submitted_status" class="form-select" (change)="typeChange()">
+                <option value="1">Dealer to Dealer</option>
+                <option *ngIf="accountType == 'Manager'" value="2">Dealer to Demo</option>
+                <option value="3">Demo to Dealer</option>
+              </select>
+            </div>  
+  
+            <!-- <div *ngIf="selectedValue!='3'" class="col-md-5 col-12" > -->
+            <div class="col-md-5 col-12" >
+              <!-- <div class="col-md-5 col-12"  *ngIf="selectedValue=='1'"> -->
+              <div class="row">
+                <div class="col-sm-5 col-12 mb-2" *ngIf="selectedValue != '3'">
+                  <label for="exampleInputEmail1" style="font-weight: bold;">From</label>
+                  <div class="input-group search-box">
+                    <input
+                      type="text"
+                      [(ngModel)]="dealerFromText"
+                      [readonly]="bcr_submitted_status"
+                      class="form-control"
+                      placeholder="Search"
+                      aria-label="Username"
+                      aria-describedby="basic-addon1"
+                      #dealerFrom
+                    />
+                    <button
+                      (click)="validateFromSearch(dealerFrom)"
+                      [disabled]="bcr_submitted_status"
+                    ><i class="fas fa-search"></i></button>
+                  </div>
+                </div>
+
+                <div class="col-sm-5 col-12 mb-2" *ngIf="selectedValue == '3'">
+                  <label for="exampleInputEmail1" style="font-weight: bold;">From</label>
+                  <div class="input-group search-box">
+                    <select [disabled]="bcr_submitted_status" [(ngModel)]="selectedFromTerritory" class="form-select" (change)="territoryChange()">
+                      <option value="" disabled selected>Choose Territory</option>
+                      <option *ngFor="let territory of agentTerritories" [value]="territory">Territory {{ territory }}</option>
+                    </select>
+                  </div>
+                </div>
+  
+                <div class="col-sm-7 col-12 mb-2">
+                  <label style="font-weight: bold;">{{ selectedValue == '3'?'Territory ':'Dealer '}}From</label>
+                  <p> {{ selectedValue == '3'?(selectedFromTerritory != ''?'Territory '+selectedFromTerritory:'No Territory Selected'):dealerFromValue }}
+                 </p>
+                </div>
+              </div>
+            </div>
+            <!-- <div *ngIf="selectedValue!='2'" class="col-md-5 col-12 mb-2"> -->
+              <div class="col-md-5 col-12 mb-2">
+              <!-- <div class="col-md-5 col-12 mb-2"  *ngIf="selectedValue=='1'"> -->
+              <div class="row">
+                <div class="col-sm-5 col-12 mb-2" *ngIf="selectedValue != '2'">
+                  <label for="exampleInputEmail1" style="font-weight: bold;">To</label>
+                  <div class="input-group search-box">
+                    <input
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="dealerToText"
+                      [readOnly]="bcr_submitted_status"
+                      placeholder="Search"
+                      aria-label="Username"
+                      aria-describedby="basic-addon1"
+                      #dealerTo
+                    />
+                    <button 
+                    (click)="validateToSearch(dealerTo)"
+                    [disabled]="bcr_submitted_status"
+                    ><i class="fas fa-search" [class.disabled]="bcr_submitted_status"></i></button>
+                  </div>
+                </div>
+
+                <div class="col-sm-5 col-12 mb-2" *ngIf="selectedValue == '2'">
+                  <label for="exampleInputEmail1" style="font-weight: bold;">To</label>
+                  <div class="input-group search-box">
+                    <select [disabled]="bcr_submitted_status" [(ngModel)]="selectedToTerritory" class="form-select" (change)="territoryChange()">
+                      <option value="" disabled selected>Choose Territory</option>
+                      <option *ngFor="let territory of agentTerritories" [value]="territory">Territory {{ territory }}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-sm-7 col-12 mb-2">
+                  <label style="font-weight: bold;">{{ selectedValue == '2'?'Territory ':'Dealer '}}To</label>
+                  <p> {{ selectedValue == '2'?(selectedToTerritory != ''?'Territory '+selectedToTerritory:'No Territory Selected'):dealerToValue }}
+                </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="col-12">
+          <div class="row">
+            <div class="col-4">
+              <div class="gary_box">
+                <label style="font-weight: bold;">Total Billed</label>
+                ${{ total_billed | number: '1.2-2' }}
+                <p></p>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="gary_box">
+                <label style="font-weight: bold;">Total Cost</label>
+                ${{ total_cost | number: '1.2-2' }}
+                <p></p>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="gary_box">
+                <label style="font-weight: bold;">Total Credit</label>
+                ${{ total_credit | number: '1.2-2' }}
+                <p></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      <!-- Search Component end -->

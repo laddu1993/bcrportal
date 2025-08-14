@@ -1,0 +1,165 @@
+<div class="accordion-item active">
+    <div class="accordion-header invoice-mob-accordion">
+      <h1 *ngIf="transferType != '3'">Invoices</h1>
+      <h1 *ngIf="transferType == '3'">Inventory</h1>
+
+      <div class="btn-panel">
+        <div class="input-group search-box">
+          <input
+            type="text"
+            class="form-control"
+            [readonly]="bcr_submitted_status"
+            placeholder="SKU"
+            aria-label="Username"
+            aria-describedby="basic-addon1"
+            #skuSearch
+          />
+        </div>
+        
+        <div class="input-group search-box">
+          <input
+            type="text"
+            class="form-control"
+            [readonly]="bcr_submitted_status"
+            placeholder="Model"
+            aria-label="Username"
+            aria-describedby="basic-addon1"
+            #modelSearch
+          />
+        </div>
+
+        <div class="input-group search-box" [ngStyle]="{display: transferType == '3'?'none':'flex'}">
+          <input
+            type="text"
+            class="form-control"
+            [readonly]="bcr_submitted_status"
+            placeholder="Invoice"
+            aria-label="Username"
+            aria-describedby="basic-addon1"
+            #invoiceSearch
+          />
+        </div>
+
+        <div class="input-group search-box" [ngStyle]="{display: transferType == '3'?'none':'flex'}">
+          <input
+            type="text"
+            class="form-control"
+            [readonly]="bcr_submitted_status"
+            placeholder="Serial"
+            aria-label="Username"
+            aria-describedby="basic-addon1"
+            #serialSearch
+          />
+        </div>
+
+        <div class="input-group search-box" [ngStyle]="{display: transferType == '3'?'none':'flex'}">
+          <!-- <label>Age</label> -->
+          <select [disabled]="bcr_submitted_status" class="form-select" placeholder="Age" #ageSearch>
+            <option value="1" selected>1 Year</option>
+            <option value="2">2 Years</option>
+            <option value="">All</option>
+          </select>
+        </div>
+
+        <button class="btn-primary btn-search" [disabled]="bcr_submitted_status" (click)="invoiceSearched(skuSearch,modelSearch,invoiceSearch,serialSearch,ageSearch)"><i class="fas fa-search"></i></button>
+
+      </div>
+      <button
+        class="accordion-button"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseOne"
+        aria-expanded="true"
+        aria-controls="collapseOne"
+      >
+      <i class="fas fa-minus"></i>
+      <i class="fas fa-plus"></i>
+      </button>
+    </div>
+    <div
+      id="collapseOne"
+      class="accordion-collapse collapse show"
+    >
+    
+      <div class="accordion-body">
+        <app-skeleton-loader *ngIf="isLoading"></app-skeleton-loader>
+        <p *ngIf="!isLoading && emptyResult">{{ emptyMessage }}</p>
+        <!-- Invoice table Component -->
+        <div [ngStyle]="{'display': isLoading || emptyResult? 'none': 'block'}">
+          <table mat-table [dataSource]="dataSource" matSort class="table-husqvarna table invoice_table">
+            <tbody>
+              <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef class="col1">
+                  Add to Cur. BCR
+                </th>
+                <td mat-cell *matCellDef="let row" class="col1">
+                  <span class="label-item">Add to Cur. BCR</span>
+                  <input
+                      class="form-check-input mt-0 add-checkbox"
+                      type="checkbox"
+                      [checked]="invoiceSeleced.includes(row)"
+                      [disabled]="invoiceSeleced.includes(row) || bcr_submitted_status"
+                      value=""
+                      aria-label="Checkbox for following text input"
+                      (change)="checkboxClicked(row,$event)"
+                    />
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="sku">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header > SKU </th>
+                <td mat-cell *matCellDef="let element" > <span class="label-item">SKU</span>{{ element.sku }} </td>
+              </ng-container>
+          
+              <ng-container matColumnDef="model">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="col3"> Model </th>
+                <td mat-cell *matCellDef="let element" class="col3"><span class="label-item">Model</span> {{ element.model }} </td>
+              </ng-container>
+          
+              <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="col4"> Description </th>
+                <td mat-cell *matCellDef="let element" class="col4"><span class="label-item">Description</span> {{ element.description }} </td>
+              </ng-container>
+          
+              <ng-container matColumnDef="invoice">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="col5"> Invoice # </th>
+                <td mat-cell *matCellDef="let element" class="col5"><span class="label-item">Invoice#</span>  {{ element.invoice }} </td>
+              </ng-container>
+          
+              <ng-container matColumnDef="serial">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="serial-col"> Serial # </th>
+                <td mat-cell *matCellDef="let element" class="serial-col"><span class="label-item">Serial # </span> {{ element.serial }} </td>
+              </ng-container>
+          
+              <ng-container matColumnDef="billed" *ngIf="transferType!='3'">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Billed </th>
+                <td mat-cell *matCellDef="let element"><span class="label-item">Billed </span> {{ element.billed | currency: 'USD':'symbol':'1.2-2' }} </td>
+              </ng-container>
+          
+              <ng-container matColumnDef="msrp">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> MSRP </th>
+                <td mat-cell *matCellDef="let element"><span class="label-item">MSRP </span> {{ element.msrp | currency: 'USD':'symbol':'1.2-2' }} </td>
+              </ng-container>
+          
+              <ng-container matColumnDef="current">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Current </th>
+                <td mat-cell *matCellDef="let element"><span class="label-item">Current </span> {{ element.current | currency: 'USD':'symbol':'1.2-2' }} </td>
+              </ng-container>
+          
+              <!-- Table Header and Body -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </tbody>
+          </table>
+          <mat-paginator 
+            [length]="filteredInvoices.length"
+            [pageSize]="5"
+            [pageSizeOptions]="[5, 10, 25, 100]"
+            aria-label="Select page"
+          ></mat-paginator>
+        </div>
+        
+        <!-- Invoice table Component end -->
+      </div>
+    </div>
+  </div>

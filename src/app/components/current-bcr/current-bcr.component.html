@@ -1,0 +1,270 @@
+<div #accordionItem id="accordionItem" class="accordion-item active">
+    <!-- Changed the accordion-header bcr_table from 'h2' to 'div' -> Viju Varghese-->
+    <div class="accordion-header bcr_table">  
+      <h1>Current BCR</h1>  
+      <button
+        class="accordion-button collapsed"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseTwo"
+        aria-expanded="false"
+        aria-controls="collapseTwo" >
+        <i class="fas fa-minus toggle-icon"></i>
+        <i class="fas fa-plus toggle-icon"></i>
+      </button>
+    </div>
+    <div
+      id="collapseTwo"
+      class="accordion-collapse collapse"
+    >
+      <div class="accordion-body">
+        <div class="btn-panel">
+          <div class="txt_btns">
+            <button class="text-btn" data-bs-toggle="modal" [disabled]="bcr_submitted_status" data-bs-target="#importBulkModal">
+              <i class="fas fa-file-import"></i>Import Bulk
+            </button>
+            <button class="text-btn" (click)="addManualEntry()" [disabled]="bcr_submitted_status" data-bs-toggle="modal" data-bs-target="#editmanualentymodal" >
+              <i class="fas fa-user-edit"></i>Manual Entry
+            </button>
+            <button class="text-btn"  data-bs-toggle="modal"
+            data-bs-target="#detailsmodal" (click)="transferDetailsClicked()">
+              <i class="fas fa-file"></i>Details
+            </button>
+            <button class="text-btn" [disabled]="savedInvoices.length == 0" (click)="printBCR()">
+              <i class="fas fa-print"></i>Print
+            </button>
+            <button [disabled]="bcr_submitted_status" class="text-btn" (click)="saveBCR()">
+              <i class="fas fa-save"></i>Save
+            </button>
+          </div>
+  
+          <button
+            class="primary_btn"
+            [disabled]="bcr_submitted_status" 
+            (click)="submitBCR()"
+          >Submit BCR</button>
+        </div>
+        <p *ngIf="selectedInvoices.length == 0">There are no records...</p>
+        <div *ngIf="selectedInvoices.length != 0">
+          <table id="selected-invoices" mat-table [dataSource]="selectedInvoiceSource" matSort class="table-husqvarna invoice_table table selected_invoice_table">
+            <tbody>
+              <ng-container matColumnDef="sku">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> SKU </th>
+                <td mat-cell *matCellDef="let element"><span class="label-item">SKU</span> {{ element.sku }} </td>
+              </ng-container>
+          
+              <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Description </th>
+                <td mat-cell *matCellDef="let element"><span class="label-item">Description</span> {{ element.description }} </td>
+              </ng-container>
+          
+              <ng-container matColumnDef="invoice">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Invoice # </th>
+                <td mat-cell *matCellDef="let element"><span class="label-item">Invoice #</span> {{ element.invoice }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="serial">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Serial # </th>
+                <td mat-cell *matCellDef="let element"><span class="label-item">Serial #</span> {{ element.serial }} </td>
+              </ng-container>
+          
+              <ng-container matColumnDef="billed">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Billed </th>
+                <td mat-cell *matCellDef="let element"><span class="label-item">Billed</span> {{ (element.billed != null?element.billed:0) | currency: 'USD':'symbol':'1.2-2' }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="current">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Current </th>
+                <td mat-cell *matCellDef="let element"><span class="label-item">Current</span> {{ (element.current != null?element.current:0) | currency: 'USD':'symbol':'1.2-2' }} </td>
+              </ng-container>
+          
+              <!-- <ng-container matColumnDef="msrp">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> MSRP </th>
+                <td mat-cell *matCellDef="let element"><span class="label-item">MSRP</span> {{ element.msrp | currency }} </td>
+              </ng-container> -->
+
+              <ng-container matColumnDef="credit">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Credit </th>
+                <td mat-cell *matCellDef="let element"><span class="label-item">Credit</span> {{ (element.credit != null?element.credit:0) | currency: 'USD':'symbol':'1.2-2' }} </td>
+              </ng-container>
+          
+              <ng-container matColumnDef="sell_amount">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Sell Amount </th>
+                <td mat-cell *matCellDef="let element"><span class="label-item">Sell Amount</span> {{ (element.sell_amount != null?element.sell_amount:0) | currency: 'USD':'symbol':'1.2-2' }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="edit">
+                <!-- data-bs-toggle="modal"
+                    data-bs-target="#editmanualentymodal" -->
+                <th mat-header-cell *matHeaderCellDef> Edit </th>
+                <td mat-cell *matCellDef="let element">
+                  <span class="label-item">Edit</span
+                  ><a
+                    class="icon_btn edit-bcr"
+                    (click)="editBCR(element)"
+                    [class.disabled]="bcr_submitted_status"
+                    [attr.data-bs-toggle]="bcr_submitted_status ? null : 'modal'"
+                    [attr.data-bs-target]="bcr_submitted_status ? null : '#editmanualentymodal'"
+                    ><i class="fas fa-edit"></i
+                  ></a>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="remove">
+                <th mat-header-cell *matHeaderCellDef> Remove </th>
+                <td mat-cell *matCellDef="let element">
+                  <span class="label-item">Remove</span
+                    ><button class="remove_btn" (click)="removeBCR(element)" [disabled]="bcr_submitted_status">
+                      <i class="fas fa-times"></i>
+                    </button>
+                </td>
+              </ng-container>
+          
+              <!-- Table Header and Body -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
+            </tbody>
+          </table>
+          <mat-paginator 
+            [length]="selectedInvoices.length"
+            [pageSize]="5"
+            [pageSizeOptions]="[5, 10, 25, 100]"
+            aria-label="Select page"
+          ></mat-paginator>
+        </div>
+        <!-- BCR table Component end -->
+        
+      </div>
+    </div>
+</div>
+
+
+<div id="pdfContent" class="pdfContent" style="display: none; margin-top: 40px;" #printTemplate>
+  <!-- Part 1: Transfer Details -->
+  <div class="pdf-header">
+      <div class="header-center">
+          <h2>Husqvarna Merchandise Transfer</h2>
+      </div>
+      <div class="header-right" style="text-align: right;">
+          <p style="margin-bottom: 3px; color: #273a60;"><strong>Transfer From: </strong>{{ transferType != "3"?dealerFromValue:"DEMO" }}</p>
+          <p style="margin-bottom: 3px; color: #273a60;"><strong>Transfer To: </strong>{{ transferType != "2"?dealerToValue:"DEMO" }}</p>
+      </div>
+  </div>
+
+  <!-- Part 2: Transfer Items Table -->
+  <div class="pdf-table">
+    <table class="table-husqvarna table invoice_table" style="border:1px solid #f4f4f3;">
+        <thead>
+            <tr>
+              <th>SKU</th>
+              <th>Description</th>
+              <th>Invoice #</th>
+              <th>Serial #</th>
+              <th>Billed</th>
+              <th>Current</th>
+              <th>Credit</th>
+              <th>Sell Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let elementRow of savedInvoices">
+            <td>{{ elementRow.sku }}</td>
+            <td>{{ elementRow.description }}</td>
+            <td>{{ elementRow.invoice }}</td>
+            <td>{{ elementRow.serial }}</td>
+            <td>{{ elementRow.billed | currency: 'USD':'symbol':'1.2-2' }}</td>
+            <td>{{ elementRow.current | currency: 'USD':'symbol':'1.2-2' }}</td>
+            <td>{{ elementRow.credit | currency: 'USD':'symbol':'1.2-2' }}</td>
+            <td>{{ elementRow.sell_amount | currency: 'USD':'symbol':'1.2-2' }}</td>
+          </tr>
+          <tr class="selected-row">
+            <td><b>Total</b></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><b>{{ total_billed | currency: 'USD':'symbol':'1.2-2' }}</b></td>
+            <td><b>{{ total_cost | currency: 'USD':'symbol':'1.2-2' }}</b></td>
+            <td><b>{{ total_credit | currency: 'USD':'symbol':'1.2-2' }}</b></td>
+            <td><b>{{ total_sell_amount | currency: 'USD':'symbol':'1.2-2' }}</b></td>
+          </tr>
+        </tbody>
+    </table>
+  </div>
+
+  <!-- Part 3: Signature Section -->
+  <div class="signature-section" style="text-align: right; display: flex; justify-content: flex-end;">
+    <div class="signature">
+        <label for="signature" style="text-align: left;">Signed:</label>
+        <textarea id="signature" rows="4" cols="40"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- Import Bulk Dialog -->
+<div
+  class="modal fade"
+  id="importBulkModal"
+  data-bs-backdrop="static"
+  tabindex="-1"
+  aria-labelledby="importBulkModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content" *ngIf="bulkImportEnabled">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="importBulkModalLabel">Import Bulk</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="">
+          <div class="mb-3">
+            <label for="bulkFile" class="form-label">Select File <span class="color-red">*</span></label>
+            <input
+              type="file"
+              id="bulkFile"
+              class="form-control"
+              (change)="onBulkFileChange($event)"
+              accept=".xlsx, .xls, .csv"
+            />
+            <div *ngIf="bulkFileError" class="text-danger mt-1">
+              <small>{{ bulkFileError }}</small>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <a [href]="baseUrl + 'assets/sample-template.csv'" download>
+              <i class="fas fa-download me-1"></i> Download Sample CSV
+            </a>
+          </div>
+        </form>
+      </div>
+      <div *ngIf="importErrors?.length" class="mt-2" style="border: 1px solid #dc3545; background-color: #f8d7da; padding: 0.75rem; border-radius: 0.25rem; color: #842029;">
+        <ul class="mb-0 ps-3" style="font-size: 0.875rem;">
+          <li *ngFor="let err of importErrors">{{ err }}</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="secondary_btn"
+          data-bs-dismiss="modal"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="primary_btn"
+          (click)="importBulk()"
+          [disabled]="!selectedBulkFile"
+        >
+          Import
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

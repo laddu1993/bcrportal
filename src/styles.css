@@ -1,0 +1,789 @@
+/* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files */
+
+
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+
+
+:root {
+     font-size: 16px;
+
+     /* colors */
+    --white:#fff;
+    --GREYSCALE-Grey-400:#90908F;
+    --Grey-100:#F4F4F3;
+    --Grey-300:#D2D2D1;
+    --Grey-600:#3D3D3C;
+    --Grey-700: #2C2C2B;
+    --Hasqvarna-Blue:#273A60;
+    --Navyblue:#001035;
+
+    /* fonts */
+    --primary-font:"Heebo", sans-serif;
+    --secondary-font:"Roboto", sans-serif;
+
+
+  }
+
+  @media only screen and (max-width: 1400px) {
+    :root {
+      font-size: 15px;
+    }
+  }
+  @media only screen and (max-width: 900px) {
+    :root {
+      font-size: 14px;
+    }
+  }
+
+
+  
+
+
+body{
+    margin: 0;
+    padding: 0;
+    background: var(--Grey-100);
+    font-family: var(--primary-font)
+}
+
+h1{
+    color: var(--Hasqvarna-Blue);
+    font-size: 1.125rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%; /* 27px */
+}
+
+label{
+    color: var(--Grey-600, #3D3D3C);
+    font-family:var(--secondary-font);
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 141%; /* 16.92px */
+    display: block;
+    margin-bottom: 5px;
+}
+input{
+    border-radius: 6px !important;
+    border: 1px solid var(--GREYSCALE-Grey-400) !important;
+}
+
+select{
+    border-radius: 6px !important;
+    border: 1px solid var(--GREYSCALE-Grey-400) !important;
+}
+
+textarea{
+    border-radius: 6px !important;
+    border: 1px solid var(--GREYSCALE-Grey-400) !important;
+    width: 100%;
+}
+
+
+.primary_btn{
+    border-radius: 6px;
+    border: 1px solid var(--Grey-600);
+    color: var(--white);
+    text-align: center;
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%; /* 21px */
+    letter-spacing: 1.12px;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: all .3s;
+    background: var(--Hasqvarna-Blue);
+
+}
+
+.primary_btn:hover{
+    background: var(--husqvarna-blue-15, linear-gradient(0deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.15) 100%), #273A60);
+    box-shadow: 3px 3px 2px 0px rgba(0, 0, 0, 0.10);
+}
+
+.secondary_btn{
+    border-radius: 6px;
+    border: 1px solid var(--Grey-600);
+    color: var(--Grey-600);
+    text-align: center;
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%; /* 21px */
+    letter-spacing: 1.12px;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: all .3s;
+    background: var(--white);
+
+}
+
+.secondary_btn:hover{
+  background: var(--Grey-100);
+  transition: all .3s;
+}
+
+.text-btn {
+    color: var(--Hasqvarna-Blue);
+    font-size: .875rem;
+    font-style: normal;
+    line-height: 141%;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-weight: 500;
+}
+
+section{
+    padding: 10px;
+    padding-top: 90px;
+}
+
+.card{
+    border-radius: 6px;
+    border: 1px solid  #EEEEED;
+    background:#FFF;
+    max-width: 100%;
+    padding: 15px;
+    min-height: calc(100vh - 99px);
+}
+
+.card-small{
+    border-radius: 6px;
+    border: 1px solid  #EEEEED;
+    background:#FFF;
+    max-width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.accordion .accordion-button{
+    width: auto;
+    border-radius: 6px;
+    background: var(--Grey-100);
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    right: 0;
+    box-shadow: none !important;
+    padding-left: 14px;
+}
+
+.accordion .accordion-button::after {
+    background-image: none;
+}
+
+.accordion-button:not(.collapsed)::after{
+    background-image: none;
+}
+
+
+
+
+.accordion-button i:first-child{
+    display: none;
+  }
+  .accordion-button i:last-child{
+    display: block;
+  }
+
+.accordion-button:not(.collapsed) i:first-child{
+    display: block;
+}
+.accordion-button:not(.collapsed) i:last-child{
+    display:none;
+}
+
+.accordion-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 0;
+    position: relative;
+    padding-right: 50px;
+    align-items: center;
+}
+
+.accordion-header h1 {
+    margin: 0;
+    /* margin-left: 10px; */
+}
+
+.accordion-header {
+    padding: 15px 0;
+    padding-right: 50px;
+}
+
+.accordion-item {
+    border: none;
+    /* border-bottom: 1px solid var(--Grey-300); */
+    border-radius: 0 !important;
+}
+.accordion-body{
+    padding: 0;
+}
+.search-box{
+    position: relative;
+}
+
+.search-box button {
+    border: none;
+    background: none;
+    position: absolute;
+    right: 5px;
+    top: 8px;
+    font-size: 14px;
+    z-index: 10 !important;
+    color: var(--Hasqvarna-Blue);
+}
+
+.accordion-button:focus, .form-control:focus, .form-select:focus{
+    box-shadow: none !important;
+}
+
+.accordion-header .search-box{
+    width: 200px;
+}
+
+.accordion-header .btn-panel{
+    display: flex;
+    gap: 10px;
+}
+
+.page-details {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 15px;
+}
+
+.page-details select{
+    width: 100px;
+}
+
+.page-details p{
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+.pagination-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--Grey-100);
+    padding: 5px 10px;
+}
+ul.pagination {
+    margin: 0;
+}
+
+.pagination-wrap  .page-item a{
+    background: none !important;
+    border: none !important;
+    color: var(--Hasqvarna-Blue);
+    padding: 5px 10px;
+    font-size: 0.875rem;
+}
+
+.pagination-wrap .page-item.disabled a{
+    opacity: .4;
+}
+.pagination-wrap .page-item.active a{
+   background: var(--Grey-300) !important;
+   border-radius: 6px;
+}
+
+
+
+/* Header Component */
+header{
+    width: 100%;
+    height: 75px;
+    padding: 0;
+    align-items: center;
+    background: var(--white);
+    box-shadow: 5px 4px 7px #ebebeb;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    z-index: 99;
+}
+/* Header Component end */
+
+/* Card Header Component */
+.main_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--Grey-300);
+    padding-bottom: 10px;
+}
+
+.main_header  .btn-panel{
+    display: flex;
+    gap: 10px;
+}
+
+.main_header h1{
+    margin: 0;
+}
+/* Card Header Component end */
+
+
+/* Header Search */
+.search-section .data_row {
+    padding-top: .5rem;
+    padding-bottom: 0px;
+    border-bottom: 2px solid var(--Hasqvarna-Blue);
+    margin-bottom: 15px;
+}
+.gary_box {
+    /* background: var(--Grey-100); */
+    background-color: #cbcbcb;
+    border-radius: 6px;
+    padding: 10px 20px;
+    margin-bottom: 0px;
+}
+
+.gary_box p{
+    margin-bottom: 0;
+}
+.search-section p{
+    margin: 0 !important;
+    color: var(--Grey-700);
+    font-family: var(--primary-font);
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 150%; /* 24px */
+}
+
+.search-section .data_row:first-child p{
+    margin: 0 !important;
+    /* margin-top: 10px !important; */
+    height: 35.75px;
+    display: flex;
+    align-items: center;
+}
+
+/* Header Search  end*/
+
+
+
+
+
+.table-husqvarna th{
+    background: var(--Grey-100);
+    color: var(--GREYSCALE-Grey-600);
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 141%; /* 19.74px */
+    padding: 10px 5px;
+    border-bottom: 1px solid var(--Grey-100);
+    border-top: 1px solid var(--Grey-100);
+    margin-bottom: 0 !important;
+}
+.table-husqvarna tr{
+    position: relative;
+}
+table{
+    margin-bottom: 0 !important;
+}
+.table-husqvarna td{
+    background: #FFF;
+    border-bottom: 1px solid var(--Grey-100);
+    font-size: 0.875rem;
+    font-style: normal;
+    /* font-weight: 500; */
+    line-height: 141%; /* 19.74px */
+    padding: 10px 5px;
+    font-weight: 400;
+    color: #3d3d3c;
+}
+
+
+.table-husqvarna tr:last-child td{
+    border-bottom: none;
+}
+.logo{
+    margin:0 15px;
+}
+
+
+.table_accordion_icon{
+    display: none;
+}
+
+.form-check-input {
+    height: 2em;
+    width: 2em;
+}
+
+.form-check-input:hover {
+    height: 2em;
+    width: 2em;
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: var(--Hasqvarna-Blue) ;
+    border-color: var(--Navyblue);
+    height: 2em;
+    width: 2em;
+}
+.label-item{
+    display: none;
+}
+.txt_btns {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+
+.accordion-item .accordion-header .search-box {
+    display: none;
+    transition: .3s all;
+ }
+
+ .accordion-item.active .accordion-header .search-box {
+    display: flex;
+    transition: .3s all;
+ }
+
+ .accordion-item .accordion-header  .btn-panel {
+    display: none;
+    transition: .3s all;
+ }
+
+ .accordion-item.active .accordion-header  .btn-panel{
+    display: flex;
+    transition: .3s all;
+ }
+
+a.icon_btn {
+    background: none;
+    padding: 10px 0;
+    display: block;
+
+}
+a.icon_btn i{
+  font-size: 16px;
+  color: var(--Hasqvarna-Blue);
+}
+.remove_btn{
+    background: var(--Grey-300) !important ;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    border: none;
+   
+}
+.remove_btn i{
+    color: var(--Hasqvarna-Blue);
+}
+.modal-header, .modal-footer {
+    border: none;
+}
+.modal-header {
+    padding-bottom: 0;
+}
+.modal-header h1{
+    margin: 0 !important;
+}
+@media (max-width: 768px) {
+
+
+.btn-panel {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    gap: 15px;
+    flex-direction: column;
+}
+    
+    .label-item{
+        display: table;
+        box-sizing: border-box;
+        padding-bottom: 2px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-family: Husqvarna Gothic, "Roboto";
+        color: var(--Navyblue) !important;
+        background: none !important;
+   
+    }
+    
+ .table_accordion_icon {
+        display: flex;
+        border: none;
+        background: var(--Grey-300) !important;
+        border-radius: 10px;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        right: 10px;
+        top: 18px;
+    }
+    .table_accordion_icon i{
+        color: var(--Hasqvarna-Blue);
+        transition: .3s all;
+    }
+
+    .pagination-wrap {
+        flex-direction: column;
+         gap: 10px;
+        padding: 10px 0;
+    }
+    .page-details {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .table-husqvarna th{
+        display: none;
+    }
+
+    .table-husqvarna  tr td{
+        background-color: var(--Grey-100) !important;
+        padding: 16px;
+    }
+    .table-husqvarna  tr{
+        border: none !important;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    
+
+
+    .main_header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .main_header .btn-panel {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .main_header .btn-panel button {
+        display: flex;
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .invoice_table tr {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+      height: auto;
+    }
+    .invoice_table {
+        background-color: transparent !important; 
+    }
+    .invoice_table tr td:nth-child(1),
+    .invoice_table tr td:nth-child(2) {
+      flex: 1 1 50%;
+      display: block;
+      transition: .3s all;
+    }
+
+    .invoice_table tr td:nth-child(7),
+    .invoice_table tr td:nth-child(8),
+    .invoice_table tr td:nth-child(9) {
+      flex: 1 1 33.33%;
+      border-top: 1px solid #fff;
+     
+    }
+    .invoice_table tr td:nth-child(7),
+    .invoice_table tr td:nth-child(8){
+        border-right:1px solid #fff;
+    }
+    .invoice_table tr td:nth-child(3),
+    .invoice_table tr td:nth-child(4),
+    .invoice_table tr td:nth-child(5),
+    .invoice_table tr td:nth-child(6) {
+      flex: 1 1 50%;
+      border-top: 1px solid #fff;
+    }
+
+    .invoice_table td {
+      display: block;
+      width: 100%;
+      padding: 12px !important;
+    }
+
+    /* .invoice_table tr td:nth-child(3) {
+        border-top: 1px solid #D2D2D1;
+    } */
+    .invoice_table tr.active td{
+        display: block;
+        transition: .3s all;
+    }
+    .invoice_table tr td{
+        /* display: none; */
+        transition: .3s all;
+    }
+
+    .invoice_table tr.active .table_accordion_icon i {
+       rotate: -180deg;
+    }
+
+    h2.accordion-header.bcr_table {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .bcr_table .btn-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 20px;
+        width: calc(100% + 50px);
+    }
+    .search-section .data_row:first-child p {
+        margin: 0 !important;
+        margin-top: 0px !important;
+        margin-bottom: 5px !important;
+    }
+
+  }
+
+  .btn-panel {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    gap: 15px;
+}
+
+  
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.cdk-global-overlay-wrapper, .cdk-overlay-container {
+    z-index: 9999 !important;
+}
+
+/* Define the green color for the toaster message */
+.green-snackbar .mdc-snackbar__surface {
+    background-color: #227730 !important; /* Green background */
+    color: white !important;              /* White text color */
+}
+
+.red-snackbar .mdc-snackbar__surface {
+    background-color: red !important; /* Green background */
+    color: white !important;              /* White text color */
+}
+
+.mdc-snackbar__label {
+    color: white !important; /* Ensure the message text is white */
+}
+
+.mdc-snackbar__actions button {
+    color: white !important; /* Ensure the button (action text) is white */
+}
+
+.transfer_table tbody tr:hover{
+    cursor: pointer;
+}
+
+.edit-bcr:hover {
+    cursor: pointer;
+}
+
+.fixed-progress-bar {
+position: fixed; /* Fix it at the top of the viewport */
+top: 0;          /* Align to the top of the page */
+left: 0;         /* Align to the left edge */
+width: 100%;     /* Span the entire width of the viewport */
+z-index: 1000;   /* Ensure it stays above all other content */
+}
+
+.mdc-linear-progress__bar-inner
+{
+    border-color: #273A60 !important;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Ensure the overlay appears above other content */
+}
+
+.form-check-inline {
+    margin-right: 15px; /* Spacing between radio buttons */
+    display: flex;
+    align-items: center; /* Align the label and radio button vertically */
+  }
+  
+  /* Adjust label appearance */
+  .form-check-label {
+    margin-bottom: 0; /* Ensure the label is aligned correctly */
+    margin-left: 8px;  /* Add space between radio button and label */
+    font-size: 16px;   /* Optional: Adjust font size for better readability */
+  }
+  
+  /* Styling for radio buttons to avoid the square shape */
+  .form-check-input[type="radio"] {
+    -webkit-appearance: radio;  /* Ensure proper appearance on Webkit browsers */
+    -moz-appearance: radio;     /* For Firefox */
+    appearance: radio;          /* Standard appearance */
+    margin: 0;                  /* Remove any extra margin/padding */
+    border-radius: 50%;         /* Make sure the radio button is circular */
+    width: 18px;                /* Control size of the radio button */
+    height: 18px;               /* Control size of the radio button */
+    border: 2px solid #007bff;  /* Optional: border color */
+    background-color: #fff;     /* Background color */
+  }
+ input[type=text]:read-only ,textarea:read-only{
+    background-color: #dfdfdf;
+    cursor: not-allowed;
+ }
+ input[type=text]:read-only:focus, textarea:read-only:focus {
+    background-color: #dfdfdf;
+ }
+ textarea:focus-visible {
+    outline: none;
+ }
+
+ .search-section label{
+    font-size: 1rem;
+ }
+
+ .selected-row td{
+    background-color: #26395e1a;
+ }
+
+ .table.invoice_table tr td{
+    vertical-align: middle;
+  }
+.btn-panel .search-box input{
+    line-height: 22.75px;
+}
+.table.invoice_table tr td:first-child,.table.invoice_table tr th:first-child{
+    padding-left: 16px;
+}

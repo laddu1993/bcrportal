@@ -1,0 +1,27 @@
+<div class="card-small">
+  <div class="main_header">
+    <h1>Credit & Re-bill Summary : Agent Portal</h1>
+    <div class="btn-panel">
+      <button class="primary_btn" 
+        routerLink="/create_bcr" 
+        [queryParams]="{ aid: account_id }" 
+        *ngIf="bcr_status === 'current_bcr'"
+        (click)="createBCR()">
+        Create BCR
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="accordion" id="accordionExample">
+  <div class="card-small">
+    <app-list-transfers></app-list-transfers>
+  </div>
+  <div class="card-small">
+    <app-selected-transfers></app-selected-transfers>
+  </div>
+</div>
+  
+
+
+<app-delete-popup></app-delete-popup>
